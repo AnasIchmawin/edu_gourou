@@ -5,7 +5,7 @@
     <menuitem id="menu_library_root"
               name="Bibliothèque"
               sequence="10"
-              web_icon="library_management,static/description/icon.png"/>
+              web_icon="library_management,static/description/icon.ico"/>
 
     <!-- Tableau de bord -->
     <menuitem id="menu_library_dashboard"
@@ -134,6 +134,29 @@
               parent="menu_library_import_export"
               action="action_library_book_import_wizard"
               sequence="10"/>
+
+    <menuitem id="menu_library_notifications"
+              name="Notifications"
+              parent="menu_library_root"
+              sequence="96"/>
+
+    <menuitem id="menu_library_notification_settings"
+              name="Paramètres"
+              parent="menu_library_notifications"
+              action="action_library_notification_settings"
+              sequence="10"/>
+
+    <menuitem id="menu_library_notification_log"
+              name="Journal"
+              parent="menu_library_notifications"
+              action="action_library_notification_log"
+              sequence="20"/>
+
+    <menuitem id="menu_library_notification_failed"
+              name="Échecs"
+              parent="menu_library_notifications"
+              action="action_library_notification_log_failed"
+              sequence="30"/>
 
     <menuitem id="menu_library_configuration"
               name="Configuration"

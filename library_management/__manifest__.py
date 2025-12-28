@@ -24,6 +24,7 @@
     'data': [
         'security/ir.model.access.csv',
         'data/library_data.xml',
+        'data/library_notification_data.xml',
         'views/library_book_views.xml',
         'views/library_author_views.xml',
         'views/library_category_views.xml',
@@ -32,6 +33,7 @@
         'views/library_penalty_views.xml',
         'views/library_membership_fee_views.xml',
         'views/library_wizards_views.xml',
+        'views/library_notification_views.xml',
         'views/library_dashboard_views.xml',
         'views/library_menus.xml',
     ],

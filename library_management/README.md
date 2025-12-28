@@ -4,14 +4,18 @@
 
 Module complet de gestion de bibliothèque pour Odoo 17, développé dans le cadre d'un projet universitaire. Ce module permet de gérer efficacement une bibliothèque avec la gestion des livres, auteurs, catégories, emprunts et un tableau de bord statistique moderne.
 
-## ✨ Fonctionnalités
+## ✨ Fonctionnalités Principales
 
-### 📊 Tableau de Bord (Nouveau!)
+### 📊 Tableau de Bord et Rapports (Catégorie 5)
 - **Statistiques en temps réel** :
   - Total des livres, disponibles, empruntés, perdus
   - Total des emprunts, actifs, en retard, retournés
-  - Nombre d'auteurs et catégories
+  - Statistiques des adhérents (actifs, expirés, suspendus)
 - **Boutons d'accès rapide** avec icônes vers les fonctionnalités principales
+- **Vues analytiques** :
+  - Graphiques en barres (emprunts par mois)
+  - Graphiques en camembert (livres par catégorie/état)
+  - Tableaux croisés dynamiques (Pivot)
 - **Design moderne** avec interface intuitive
 
 ### 📚 Gestion des Livres
@@ -33,7 +37,111 @@ Module complet de gestion de bibliothèque pour Odoo 17, développé dans le cad
 - Fiche complète des auteurs avec photo
 - Biographie, nationalité, date de naissance
 - Liste des livres par auteur
-- C🎨 Améliorations Visuelles
+- Compteur de livres par auteur
+
+### 👥 Gestion des Membres/Adhérents (Catégorie 1)
+- **Fiches complètes des adhérents** :
+  - Numéro de carte unique (ADH00001, ADH00002...)
+  - Types : Étudiant, Enseignant, Personnel, Externe
+  - Dates d'inscription et d'expiration
+  - Photo et coordonnées complètes
+- **États automatiques** :
+  - 🟢 Actif : Adhésion valide
+  - 🟡 Expiré : Adhésion périmée
+  - 🔴 Suspendu : Compte bloqué
+- **Statistiques en temps réel** :
+  - Total emprunts, emprunts en cours, en retard
+  - Total pénalités, pénalités payées, impayées
+- **Smart buttons** : Accès rapide aux emprunts et pénalités
+- **Actions** : Renouveler, Suspendre, Activer
+- **Vue Kanban** avec photos et statistiques
+
+### 💰 Gestion Financière Simple (Catégorie 3)
+
+#### Pénalités de Retard
+- **Calcul automatique** : Jours de retard × Tarif par jour
+- **Workflow complet** : Brouillon → Confirmée → Payée
+- **Paiements partiels** : Enregistrer des paiements progressifs
+- **Assistant de paiement** : Wizard avec moyens de paiement
+- **Suivi** : Montant total, payé, restant
+- **Lien avec emprunts** : Création automatique pour les retards
+
+#### Frais d'Adhésion
+- **Tarifs par type** :
+  - Étudiant : 10€
+  - Enseignant : 20€
+  - Personnel : member.py                # Modèle Adhérent (NOUVEAU)
+│   ├── library_borrowing.py             # Modèle Emprunt
+│   ├── library_penalty.py               # Modèle Pénalité (NOUVEAU)
+│   ├── library_membership_fee.py        # Modèle Frais adhésion (NOUVEAU)
+│   ├── library_notification.py          # Modèle Notification (NOUVEAU)
+│   └── library_dashboard.py             # Modèle Tableau de bord
+├── wizards/                             # Assistants (NOUVEAU)
+│   ├── __init__.py
+│   ├── library_penalty_payment_wizard.py      # Assistant paiement pénalité
+│   └── library_book_import_wizard.py          # Assistant import CSV
+├── views/                               # Vues XML
+│   ├── library_dashboard_views.xml      # Tableau de bord + Rapports
+│   ├── library_book_views.xml           # Vues Livre (améliorées)
+│   ├── library_author_views.xml         # Vues Auteur (améliorées)
+│   ├── library_category_views.xml       # Vues Catégorie (améliorées)
+│   ├── library_member_views.xml         # Vues Adhérent (NOUVEAU)
+│   ├── library_borrowing_views.xml      # Vues Emprunt (améliorées)
+│   ├── library_penalty_views.xml        # Vues Pénalité (NOUVEAU)
+│   ├── library_membership_fee_views.xml # Vues Frais adhésion (NOUVEAU)
+│   ├── library_notification_views.xml   # Vues Notification (NOUVEAU)
+│   ├── library_wizards_views.xml        # Vues Assistants (NOUVEAU)
+│   └── library_menus.xml                # Menus complets
+├── security/                            # Droits d'accès
+│   └── ir.model.access.csv              # Permissions pour tous les modèles
+├── data/                                # Données et configuration
+│   ├── library_data.xml                 # Données de démo + Séquences
+│   └── library_notification_data.xml    # Templates email + Cron jobs (NOUVEAU)
+├── static/                              # Ressources statiques
+│   ├── description/
+│   │   └── icon.png                     # Icône du module
+│   └── src/
+│       └── css/
+│           └── library_style.css        # Styles personnalisés
+└── docker-compose.yml                   # Configuration Docker (racine projet)
+- **Activation/désactivation** par type de notification
+- **Templates d'emails** professionnels avec design moderne
+
+#### Journal des Notifications
+- **Historique complet** de toutes les notifications envoyées
+- **Suivi des échecs** avec messages d'erreur détaillés
+- **Filtres intelligents** : Par type, état, destinataire
+- **Vue dédiée** pour les notifications échouées
+- **Statistiques** : Taux de succès, échecs par type
+
+#### Cron Jobs Automatiques
+- ⏰ **Vérification quotidienne** des échéances proches
+- ⏰ **Vérification quotidienne** des retards
+- ⏰ **Vérification quotidienne** des adhésions expirant
+
+### 📥 Import/Export et Intégration (Catégorie 11)
+
+#### Import de Catalogue CSV
+- **Assistant d'import** avec interface intuitive
+- **3 modes d'import** :
+  - Créer de nouveaux livres uniquement
+  - Mettre à jour les livres existants (par ISBN)
+  - Créer et mettre à jour (mode mixte)
+- **Téléchargement de template** CSV avec exemples
+- **Création automatique** :
+  - Auteurs manquants créés automatiquement
+  - Catégories manquantes créées automatiquement
+- **Format CSV simple** :
+  ```csv
+  isbn,title,author,category,publisher,pages
+  9782070360024,L'Étranger,Albert Camus,Fiction,Gallimard,186
+  ```
+- **Rapport d'import détaillé** :
+  - Nombre de livres créés
+  - Nombre de livres mis à jour
+  - Liste des erreurs éventuelles
+
+### 🎨 Améliorations Visuelles
 
 ### Design Moderne
 - **CSS personnalisé** avec gradients et animations
@@ -107,23 +215,19 @@ library_management/
    edu_gourou/
    ├── docker-compose.yml
    ├── library_management/          # Module Odoo
-   └── odoo.conf (optionnel)
-   ```
-
-3. **Démarrez les conteneurs Docker** :
-   ```bash
-   docker-compose up -d
-   ```
-📖 Utilisation
-
-### Menu Principal : 📚 Bibliothèque
-
-#### 📊 Tableau de Bord (Page d'accueil)
-- **Statistiques en temps réel** de toute la bibliothèque
+   └KPIs clés** :
+  - Livres : Total, Disponibles, Empruntés, Taux d'occupation
+  - Emprunts : Total, Actifs, En retard, Taux de retard
+  - Adhérents : Total, Actifs, Expirés, Suspendus
 - **Accès rapides** :
   - 📗 Voir Livres Disponibles
   - 📋 Emprunts en Cours
   - ⚠️ Emprunts en Retard
+  - 👥 Adhérents Actifs
+- **Vues analytiques** :
+  - 📊 Graphique emprunts par mois
+  - 🥧 Graphique livres par catégorie
+  - 📈 Tableau croisé dynamique
 
 #### 📚 Livres
 - **Tous les livres** : Vue complète (Kanban/Liste/Formulaire)
@@ -132,8 +236,145 @@ library_management/
 
 **Actions disponibles** :
 - Créer un nouveau livre
+- 📥 **Importer des livres** (CSV)
 - Modifier les informations
 - Changer l'état (disponible, maintenance, perdu)
+- Voir l'historique des emprunts
+- Archiver/Désarchiver
+
+#### 👥 Adhérents
+- **Tous les adhérents** : Liste complète avec photos
+- **Adhérents actifs** : Adhésions valides uniquement
+- **Adhérents expirés** : À renouveler
+
+**Fonctionnalités** :
+- Fiche complète avec statistiques
+- SmaInscrire un nouvel adhérent
+1. Bibliothèque → Adhérents → Tous les adhérents
+2. Cliquer sur "Créer"
+3. Remplir : Nom, Type, Email, Téléphone
+4. Ajouter une photo
+5. Sauvegarder → Numéro de carte généré automatiquement (ADH00001)
+
+#### Ajouter un nouveau livre
+1. Bibliothèque → Livres → Tous les livres
+2. Cliquer sur "Créer"
+3. Remplir : Titre, ISBN, Auteur, Catégorie, etc.
+4. Ajouter une image de couverture
+5. Sauvegarder
+
+#### Importer des livres en masse
+1. Bibliothèque → Import/Export → Importer des livres
+2. Télécharger le template CSV
+3. Remplir le fichier avec vos livres
+4. Uploader le fichier
+5. Sélectionner le mode (Créer/Mettre à jour)
+6. Lancer l'import → Rapport détaillé affiché
+
+#### Créer un emprunt
+1. Bibliothèque → Emprunts → Tous les emprunts
+2. Cliquer sur "Créer"
+3. Sélectionner le livre (doit être disponible)
+4. Sélectionner l'adhérent → Auto-remplissage des infos
+5. La date de retour est calculée automatiquement (14 jours)
+6. Cliquer sur "Confirmer l'emprunt"
+
+#### Retourner un livre
+1. Bibliothèque → Emprunts → Emprunts en cours
+2. Ouvrir l'emprunt concerné
+3. Cliquer sur "Retourner le livre"
+4. Le livre redevient automatiquement disponible
+5. Si en retard → Pénalité créée automatiquement
+
+#### Gérer une pénalité
+1. Bibliothèque → Finances → Pénalités impayées
+2. Ouvrir la pénalité
+3. Cliquer sur "Confirmer" (si brouillon)
+4. Cliquer sur "Enregistrer un paiement"
+5. Saisir le montant et la méthode
+6. Confirmer → État change en "Payée" si complet
+
+#### Renouveler une adhésion
+1. Bibliothèque → Adhérents → Adhérents expirés
+2. Ouvrir la fiche adhérent
+3. Aller dans l'onglet "Frais d'adhésion"
+4. Créer un nouveau frais (montant calculé selon le type)
+5. Confirmer le paiement
+6. L'adhérent devient automatiquement "Actif" avec nouvelle date d'expiration
+
+#### Configurer les notifications
+1. Bibliothèque → Notifications → Paramètres
+2. Choisir la méthode (Email / Odoo / Les deux)
+3. Configurer les délais :
+   - Rappel amember (Adhérent)
+- **Champs** : name, member_number, member_type, email, phone, address, photo, registration_date, expiration_date, state
+- **Héritage** : mail.thread, mail.activity.mixin
+- **Relations** : One2many vers Borrowing, Penalty, MembershipFee
+- **Champs calculés** : state (actif/expiré/suspendu), total_borrowings, current_borrowings, late_borrowings, total_penalties, unpaid_penalties
+- **Séquence** : ADH00001, ADH00002...
+
+#### library.borrowing (Emprunt)
+- **Champs** : name, book_id, member_id, borrower_name, borrower_email, borrowing_date, expected_return_date, actual_return_date, state, last_reminder_date, reminder_count
+- **Héritage** : mail.thread, mail.activity.mixin
+- **Relations** : Many2one vers Book et Member
+- **Champs calculés** : days_borrowed, is_late, late_days
+- **Séquence** : EMP00001, EMP00002...
+- **Méthodes** : _send_notification(), _get_notification_message()
+
+#### library.penalty (Pénalité)
+- **Champs** : name, borrowing_id, member_id, late_days, daily_rate, penalty_amount, payment_amount, remaining_amount, state
+- **Héritage** : mail.thread, mail.activity.mixin
+- **Relations** : Many2one vers Borrowing et Member
+- **Champs calculés** : penalty_amount, remaining_amount
+- **Séquence** : PEN00001, PEN00002...
+
+#### library.membership.fee (Frais d'adhésion)
+- **Champs** : name, member_id, fee_amount, payment_date, validity_start, validity_end, state, payment_method
+- **Héritage** : mail.thread, mail.activity.mixin
+- **Relations** : Many2one vers Member
+- **Champs calculés** : validity_end (1 an après validity_start)
+- **Séquence** : FEE00001, FEE00002...
+
+#### library.notification.settings (Paramètres notifications)
+- **Champs** : name, enable_due_soon_notification, due_soon_days, enable_overdue_notification, overdue_frequency_days, enable_membership_expiring, membership_expiring_days, notification_method
+- **Singleton** : Un seul enregistrement actif
+
+#### library.notification.log (Journal notifications)
+- **Champs** : name, notification_type, recipient_id, recipient_email, borrowing_id, book_id, sent_date, status, method, error_message
+- **Séquence** : NOT00001, NOT00002...
+
+#### library.dashboard (Tableau de bord)
+- **Champs calculés** : Tous les champs (statistiques en temps réel)
+- **Pas de stockage** : Calculs à la volée
+- **Frais d'adhésion** : Historique des paiements
+
+**Actions financières** :
+- Confirmer une pénalité
+- Enregistrer un paiement (wizard)
+- Confirmer un paiement d'adhésion
+- Annuler une transaction
+
+#### 📊 Rapports
+- **Tableau de bord** : Vue d'ensemble
+- **Emprunts par mois** : Graphique temporel
+- **Analyse des livres** : Statistiques par catégorie
+
+#### 🔔 Notifications
+- **Paramètres** : Configuration du système
+- **Journal** : Historique des notifications
+- **Échecs** : Notifications en erreur
+
+**Configuration** :
+- Méthode : Email / Odoo / Les deux
+- Rappel échéance : X jours avant (défaut: 2)
+- Fréquence retard : Tous les X jours (défaut: 3)
+- Adhésion expire : X jours avant (défaut: 7)
+
+#### 📥 Import/Export
+- **Importer des livres** : Assistant CSV
+  - Télécharger le template
+  - Uploader le fichier
+  - Créer/Mettre à jour les livresble, maintenance, perdu)
 - Voir l'historique des emprunts
 - Archiver/Désarchiver
 
@@ -175,20 +416,46 @@ library_management/
 3. Cliquer sur "Retourner le livre"
 4. Le livre redevient automatiquement disponible
    - Cliquez sur "**Installer**"
+6 catégories implémentées** :
+   - ✅ Catégorie 1 : Gestion des Membres/Adhérents
+   - ✅ Catégorie 3 : Gestion Financière Simple
+   - ✅ Catégorie 5 : Rapports et Tableaux de Bord
+   - ✅ Catégorie 6 : Notifications et Alertes
+   - ✅ Catégorie 11 : Import/Export et Intégration
+   - ✅ Fonctionnalités de base complètes
+✅ **Système de notifications** automatique avec emails  
+✅ **Import/Export CSV** pour catalogue  
+✅ **Gestion financière** (pénalités + adhésions)  
+✅ **Tableau de bord analytique** avec graphiques  
+✅ **Données de démonstration** pour présentation  
+✅ **Documentation complète** (README détaillé)  
 
-### Mise à jour du module
-🔧 Fonctionnalités Techniques
+### Fonctionnalités Implémentées
 
-### Modèles de Données
+#### ✅ Complètement Opérationnelles
+- 📚 Gestion des livres (CRUD, états, historique)
+- ✍️ Gestion des auteurs et catégories
+- 👥 Gestion complète des adhérents
+- 📖 Gestion des emprunts avec workflow
+- 💰 Pénalités de retard avec paiements
+- 💳 Frais d'adhésion avec renouvellement
+- 🔔 Notifications automatiques (email + Odoo)
+- 📥 Import CSV de catalogue
+- 📊 Tableau de bord avec KPIs
+- 📈 Rapports et analyses (graphiques, pivot)
+- ⏰ 3 Cron jobs pour automatisation
 
-#### library.book (Livre)
-- **Champs** : name, isbn, author_id, category_id, publisher, publication_date, pages, description, cover_image, state
-- **Héritage** : mail.thread, mail.activity.mixin (suivi et activités)
-- **Relations** : Many2one vers Author et Category, One2many vers Borrowing
-- **Contrainte** : ISBN unique
-
-#### library.author (Auteur)
-- **Champs** : name, birth_date, nationality, biography
+### Évolutions Possibles (Non implémentées)
+- 📱 Application mobile
+- 🔒 Gestion avancée des droits par rôle
+- 📍 Localisation physique des livres (étagères, rayons)
+- 🔄 Système de réservations de livres
+- 📚 Gestion de plusieurs exemplaires par titre
+- 📤 Export vers systèmes externes (MARC, bibliothèques numériques)
+- 📊 Rapports avancés (utilisation par adhérent, popularité livres)
+- 💬 Système de notation et commentaires de livres
+- 🔍 Recherche avancée full-text
+- 📆 Calendrier des événements (clubs de lecture, etc.)y, biography
 - **Relations** : One2many vers Book
 - **Champs calculés** : book_count
 

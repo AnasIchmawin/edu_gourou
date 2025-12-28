@@ -9,3 +9,5 @@ access_library_penalty_user,library.penalty.user,model_library_penalty,base.grou
 access_library_membership_fee_user,library.membership.fee.user,model_library_membership_fee,base.group_user,1,1,1,1
 access_library_penalty_payment_wizard_user,library.penalty.payment.wizard.user,model_library_penalty_payment_wizard,base.group_user,1,1,1,1
 access_library_book_import_wizard_user,library.book.import.wizard.user,model_library_book_import_wizard,base.group_user,1,1,1,1
+access_library_notification_settings_user,library.notification.settings.user,model_library_notification_settings,base.group_user,1,1,1,1
+access_library_notification_log_user,library.notification.log.user,model_library_notification_log,base.group_user,1,0,0,0

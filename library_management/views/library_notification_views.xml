@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vue formulaire des paramètres de notification -->
+    <record id="view_library_notification_settings_form" model="ir.ui.view">
+        <field name="name">library.notification.settings.form</field>
+        <field name="model">library.notification.settings</field>
+        <field name="arch" type="xml">
+            <form string="Paramètres de notifications">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Méthode de notification">
+                            <field name="notification_method" widget="radio"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Notifications pour emprunts">
+                        <group>
+                            <field name="enable_due_soon_notification"/>
+                            <field name="due_soon_days" 
+                                   invisible="enable_due_soon_notification == False"/>
+                        </group>
+                        <group>
+                            <field name="enable_overdue_notification"/>
+                            <field name="overdue_frequency_days" 
+                                   invisible="enable_overdue_notification == False"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Notifications pour adhérents">
+                        <group>
+                            <field name="enable_membership_expiring"/>
+                            <field name="membership_expiring_days" 
+                                   invisible="enable_membership_expiring == False"/>
+                        </group>
+                        <group>
+                            <field name="enable_book_available_notification"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste des paramètres -->
+    <record id="view_library_notification_settings_tree" model="ir.ui.view">
+        <field name="name">library.notification.settings.tree</field>
+        <field name="model">library.notification.settings</field>
+        <field name="arch" type="xml">
+            <tree string="Paramètres de notifications">
+                <field name="name"/>
+                <field name="notification_method"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action paramètres -->
+    <record id="action_library_notification_settings" model="ir.actions.act_window">
+        <field name="name">Paramètres de notifications</field>
+        <field name="res_model">library.notification.settings</field>
+        <field name="view_mode">form</field>
+    </record>
+
+    <!-- Vue liste du journal des notifications -->
+    <record id="view_library_notification_log_tree" model="ir.ui.view">
+        <field name="name">library.notification.log.tree</field>
+        <field name="model">library.notification.log</field>
+        <field name="arch" type="xml">
+            <tree string="Journal des notifications" 
+                  decoration-success="status == 'sent'"
+                  decoration-danger="status == 'failed'">
+                <field name="name"/>
+                <field name="notification_type"/>
+                <field name="recipient_id"/>
+                <field name="recipient_email"/>
+                <field name="book_id"/>
+                <field name="sent_date"/>
+                <field name="method"/>
+                <field name="status" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vue formulaire du journal -->
+    <record id="view_library_notification_log_form" model="ir.ui.view">
+        <field name="name">library.notification.log.form</field>
+        <field name="model">library.notification.log</field>
+        <field name="arch" type="xml">
+            <form string="Notification">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="notification_type"/>
+                            <field name="recipient_id"/>
+                            <field name="recipient_email"/>
+                        </group>
+                        <group>
+                            <field name="borrowing_id"/>
+                            <field name="book_id"/>
+                            <field name="sent_date"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="method"/>
+                            <field name="status"/>
+                        </group>
+                    </group>
+                    <group string="Détails de l'erreur" 
+                           invisible="status != 'failed'">
+                        <field name="error_message" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Recherche du journal -->
+    <record id="view_library_notification_log_search" model="ir.ui.view">
+        <field name="name">library.notification.log.search</field>
+        <field name="model">library.notification.log</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher notifications">
+                <field name="name"/>
+                <field name="recipient_id"/>
+                <field name="book_id"/>
+                <filter string="Envoyées" name="sent" 
+                        domain="[('status', '=', 'sent')]"/>
+                <filter string="Échecs" name="failed" 
+                        domain="[('status', '=', 'failed')]"/>
+                <separator/>
+                <filter string="Rappel échéance" name="due_soon" 
+                        domain="[('notification_type', '=', 'due_soon')]"/>
+                <filter string="Alerte retard" name="overdue" 
+                        domain="[('notification_type', '=', 'overdue')]"/>
+                <filter string="Adhésion expire" name="membership" 
+                        domain="[('notification_type', '=', 'membership_expiring')]"/>
+                <group expand="0" string="Grouper par">
+                    <filter string="Type" name="group_type" 
+                            context="{'group_by': 'notification_type'}"/>
+                    <filter string="État" name="group_status" 
+                            context="{'group_by': 'status'}"/>
+                    <filter string="Méthode" name="group_method" 
+                            context="{'group_by': 'method'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action journal -->
+    <record id="action_library_notification_log" model="ir.actions.act_window">
+        <field name="name">Journal des notifications</field>
+        <field name="res_model">library.notification.log</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_library_notification_log_failed" model="ir.actions.act_window">
+        <field name="name">Notifications échouées</field>
+        <field name="res_model">library.notification.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('status', '=', 'failed')]</field>
+    </record>
+
+</odoo>

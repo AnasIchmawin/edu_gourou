@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Séquence pour le journal des notifications -->
+        <record id="seq_library_notification_log" model="ir.sequence">
+            <field name="name">Journal des notifications</field>
+            <field name="code">library.notification.log</field>
+            <field name="prefix">NOT</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <!-- Template email: Rappel échéance proche -->
+        <record id="email_template_due_soon" model="mail.template">
+            <field name="name">Rappel: Retour de livre bientôt</field>
+            <field name="model_id" ref="model_library_borrowing"/>
+            <field name="subject">📚 Rappel: Retour du livre "{{ object.book_id.name }}"</field>
+            <field name="email_from">{{ user.email or '' }}</field>
+            <field name="email_to">{{ object.member_id.email }}</field>
+            <field name="body_html"><![CDATA[
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #2c3e50;">Bonjour {{ object.member_id.name }},</h2>
+                    
+                    <p style="font-size: 16px;">
+                        Nous vous rappelons que le livre suivant doit être retourné prochainement :
+                    </p>
+                    
+                    <div style="background-color: #f8f9fa; padding: 20px; border-left: 4px solid #007bff; margin: 20px 0;">
+                        <h3 style="margin-top: 0; color: #007bff;">{{ object.book_id.name }}</h3>
+                        <p><strong>Auteur:</strong> {{ object.book_id.author_id.name or 'N/A' }}</p>
+                        <p><strong>Date de retour prévue:</strong> <span style="color: #dc3545;">{{ object.expected_return_date }}</span></p>
+                    </div>
+                    
+                    <p style="font-size: 16px;">
+                        Merci de respecter cette date pour éviter toute pénalité de retard.
+                    </p>
+                    
+                    <p style="color: #6c757d; font-size: 14px; margin-top: 30px;">
+                        Cordialement,<br/>
+                        L'équipe de la bibliothèque
+                    </p>
+                </div>
+            ]]></field>
+        </record>
+
+        <!-- Template email: Alerte retard -->
+        <record id="email_template_overdue" model="mail.template">
+            <field name="name">Alerte: Livre en retard</field>
+            <field name="model_id" ref="model_library_borrowing"/>
+            <field name="subject">⚠️ RETARD: Livre "{{ object.book_id.name }}" non retourné</field>
+            <field name="email_from">{{ user.email or '' }}</field>
+            <field name="email_to">{{ object.member_id.email }}</field>
+            <field name="body_html"><![CDATA[
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #dc3545;">⚠️ Livre en retard</h2>
+                    
+                    <p style="font-size: 16px;">
+                        Bonjour {{ object.member_id.name }},
+                    </p>
+                    
+                    <div style="background-color: #fff3cd; padding: 20px; border-left: 4px solid #dc3545; margin: 20px 0;">
+                        <h3 style="margin-top: 0; color: #dc3545;">{{ object.book_id.name }}</h3>
+                        <p><strong>Auteur:</strong> {{ object.book_id.author_id.name or 'N/A' }}</p>
+                        <p><strong>Date de retour prévue:</strong> {{ object.expected_return_date }}</p>
+                        <p><strong>Retard:</strong> <span style="color: #dc3545; font-size: 18px;">{{ object.days_late }} jours</span></p>
+                    </div>
+                    
+                    <p style="font-size: 16px; color: #dc3545;">
+                        <strong>Votre emprunt est en retard.</strong> Merci de retourner le livre au plus vite pour éviter des pénalités supplémentaires.
+                    </p>
+                    
+                    <p style="font-size: 14px; background-color: #f8d7da; padding: 10px; border-radius: 5px;">
+                        💰 Des frais de retard s'appliquent à partir du premier jour de retard.
+                    </p>
+                    
+                    <p style="color: #6c757d; font-size: 14px; margin-top: 30px;">
+                        Cordialement,<br/>
+                        L'équipe de la bibliothèque
+                    </p>
+                </div>
+            ]]></field>
+        </record>
+
+        <!-- Template email: Adhésion expire bientôt -->
+        <record id="email_template_membership_expiring" model="mail.template">
+            <field name="name">Alerte: Adhésion expire bientôt</field>
+            <field name="model_id" ref="model_library_member"/>
+            <field name="subject">🔔 Votre adhésion à la bibliothèque expire bientôt</field>
+            <field name="email_from">{{ user.email or '' }}</field>
+            <field name="email_to">{{ object.email }}</field>
+            <field name="body_html"><![CDATA[
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #ff6b6b;">🔔 Votre adhésion expire bientôt</h2>
+                    
+                    <p style="font-size: 16px;">
+                        Bonjour {{ object.name }},
+                    </p>
+                    
+                    <div style="background-color: #fff3e0; padding: 20px; border-left: 4px solid #ff6b6b; margin: 20px 0;">
+                        <p><strong>Numéro de carte:</strong> {{ object.member_number }}</p>
+                        <p><strong>Type d'adhésion:</strong> {{ dict(object._fields['member_type'].selection).get(object.member_type) }}</p>
+                        <p><strong>Date d'expiration:</strong> <span style="color: #dc3545; font-size: 18px;">{{ object.expiration_date }}</span></p>
+                    </div>
+                    
+                    <p style="font-size: 16px;">
+                        Votre adhésion à la bibliothèque expire bientôt. Pensez à la renouveler pour continuer à profiter de nos services et emprunter des livres.
+                    </p>
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="#" style="background-color: #28a745; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                            Renouveler mon adhésion
+                        </a>
+                    </div>
+                    
+                    <p style="color: #6c757d; font-size: 14px; margin-top: 30px;">
+                        Cordialement,<br/>
+                        L'équipe de la bibliothèque
+                    </p>
+                </div>
+            ]]></field>
+        </record>
+
+        <!-- Cron job: Vérifier emprunts bientôt échus -->
+        <record id="ir_cron_borrowing_due_soon" model="ir.cron">
+            <field name="name">Bibliothèque: Rappel échéances proches</field>
+            <field name="model_id" ref="model_library_borrowing"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_send_due_soon_notifications()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Cron job: Alertes retards -->
+        <record id="ir_cron_borrowing_overdue" model="ir.cron">
+            <field name="name">Bibliothèque: Alertes retards</field>
+            <field name="model_id" ref="model_library_borrowing"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_send_overdue_notifications()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Cron job: Adhésions qui expirent -->
+        <record id="ir_cron_membership_expiring" model="ir.cron">
+            <field name="name">Bibliothèque: Adhésions expirant bientôt</field>
+            <field name="model_id" ref="model_library_member"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_send_membership_expiring_notifications()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Paramètres par défaut -->
+        <record id="default_notification_settings" model="library.notification.settings">
+            <field name="name">Paramètres de notifications</field>
+            <field name="enable_due_soon_notification">True</field>
+            <field name="due_soon_days">2</field>
+            <field name="enable_overdue_notification">True</field>
+            <field name="overdue_frequency_days">3</field>
+            <field name="enable_membership_expiring">True</field>
+            <field name="membership_expiring_days">7</field>
+            <field name="enable_book_available_notification">True</field>
+            <field name="notification_method">both</field>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>
