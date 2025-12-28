@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Séquence pour les emprunts -->
+        <record id="seq_library_borrowing" model="ir.sequence">
+            <field name="name">Emprunt de livre</field>
+            <field name="code">library.borrowing</field>
+            <field name="prefix">EMP</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <!-- Catégories de livres -->
+        <record id="category_fiction" model="library.category">
+            <field name="name">Fiction</field>
+            <field name="description">Romans et œuvres de fiction</field>
+        </record>
+
+        <record id="category_science_fiction" model="library.category">
+            <field name="name">Science-Fiction</field>
+            <field name="description">Romans de science-fiction</field>
+            <field name="parent_id" ref="category_fiction"/>
+        </record>
+
+        <record id="category_fantasy" model="library.category">
+            <field name="name">Fantasy</field>
+            <field name="description">Romans fantastiques</field>
+            <field name="parent_id" ref="category_fiction"/>
+        </record>
+
+        <record id="category_non_fiction" model="library.category">
+            <field name="name">Non-Fiction</field>
+            <field name="description">Livres documentaires et essais</field>
+        </record>
+
+        <record id="category_science" model="library.category">
+            <field name="name">Sciences</field>
+            <field name="description">Livres scientifiques</field>
+            <field name="parent_id" ref="category_non_fiction"/>
+        </record>
+
+        <record id="category_history" model="library.category">
+            <field name="name">Histoire</field>
+            <field name="description">Livres d'histoire</field>
+            <field name="parent_id" ref="category_non_fiction"/>
+        </record>
+
+        <record id="category_technology" model="library.category">
+            <field name="name">Technologie</field>
+            <field name="description">Livres sur la technologie et l'informatique</field>
+            <field name="parent_id" ref="category_non_fiction"/>
+        </record>
+
+        <!-- Auteurs -->
+        <record id="author_victor_hugo" model="library.author">
+            <field name="name">Victor Hugo</field>
+            <field name="nationality">Française</field>
+            <field name="birth_date">1802-02-26</field>
+            <field name="biography">Écrivain, dramaturge, poète, homme politique, académicien et intellectuel engagé français.</field>
+        </record>
+
+        <record id="author_jules_verne" model="library.author">
+            <field name="name">Jules Verne</field>
+            <field name="nationality">Française</field>
+            <field name="birth_date">1828-02-08</field>
+            <field name="biography">Écrivain français, pionnier de la science-fiction.</field>
+        </record>
+
+        <record id="author_albert_camus" model="library.author">
+            <field name="name">Albert Camus</field>
+            <field name="nationality">Française</field>
+            <field name="birth_date">1913-11-07</field>
+            <field name="biography">Écrivain, philosophe, romancier, dramaturge, nouvelliste et essayiste français.</field>
+        </record>
+
+        <!-- Livres exemples -->
+        <record id="book_les_miserables" model="library.book">
+            <field name="name">Les Misérables</field>
+            <field name="isbn">9782070409228</field>
+            <field name="author_id" ref="author_victor_hugo"/>
+            <field name="category_id" ref="category_fiction"/>
+            <field name="publisher">Gallimard</field>
+            <field name="publication_date">1862-01-01</field>
+            <field name="pages">1900</field>
+            <field name="description">Roman social de Victor Hugo, l'un des plus populaires de la littérature française.</field>
+            <field name="state">available</field>
+        </record>
+
+        <record id="book_vingt_mille_lieues" model="library.book">
+            <field name="name">Vingt mille lieues sous les mers</field>
+            <field name="isbn">9782253006329</field>
+            <field name="author_id" ref="author_jules_verne"/>
+            <field name="category_id" ref="category_science_fiction"/>
+            <field name="publisher">Le Livre de Poche</field>
+            <field name="publication_date">1870-01-01</field>
+            <field name="pages">592</field>
+            <field name="description">Roman d'aventures de Jules Verne racontant le voyage sous-marin du capitaine Nemo.</field>
+            <field name="state">available</field>
+        </record>
+
+        <record id="book_letranger" model="library.book">
+            <field name="name">L'Étranger</field>
+            <field name="isbn">9782070360024</field>
+            <field name="author_id" ref="author_albert_camus"/>
+            <field name="category_id" ref="category_fiction"/>
+            <field name="publisher">Gallimard</field>
+            <field name="publication_date">1942-01-01</field>
+            <field name="pages">186</field>
+            <field name="description">Premier roman d'Albert Camus, publié en 1942, représentant la philosophie de l'absurde.</field>
+            <field name="state">available</field>
+        </record>
+
+        <!-- Tâche cron pour vérifier les emprunts en retard -->
+        <record id="ir_cron_check_late_borrowings" model="ir.cron">
+            <field name="name">Vérifier les emprunts en retard</field>
+            <field name="model_id" ref="model_library_borrowing"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_late_borrowings()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>

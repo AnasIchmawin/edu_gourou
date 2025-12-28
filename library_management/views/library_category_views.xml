@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vue formulaire des catégories -->
+    <record id="view_library_category_form" model="ir.ui.view">
+        <field name="name">library.category.form</field>
+        <field name="model">library.category</field>
+        <field name="arch" type="xml">
+            <form string="Catégorie">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nom de la catégorie"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="parent_id"/>
+                            <field name="book_count"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" placeholder="Description de la catégorie..."/>
+                        </page>
+                        <page string="Sous-catégories">
+                            <field name="child_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="book_count"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Livres">
+                            <field name="book_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="author_id"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste des catégories -->
+    <record id="view_library_category_tree" model="ir.ui.view">
+        <field name="name">library.category.tree</field>
+        <field name="model">library.category</field>
+        <field name="arch" type="xml">
+            <tree string="Catégories">
+                <field name="name"/>
+                <field name="parent_id"/>
+                <field name="book_count"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vue recherche des catégories -->
+    <record id="view_library_category_search" model="ir.ui.view">
+        <field name="name">library.category.search</field>
+        <field name="model">library.category</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher des catégories">
+                <field name="name"/>
+                <field name="parent_id"/>
+                <separator/>
+                <filter name="filter_parent" string="Catégories principales" 
+                        domain="[('parent_id', '=', False)]"/>
+                <filter name="filter_inactive" string="Archivé" 
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_parent" string="Catégorie parente" 
+                            context="{'group_by': 'parent_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_library_category" model="ir.actions.act_window">
+        <field name="name">Catégories</field>
+        <field name="res_model">library.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer votre première catégorie
+            </p>
+            <p>
+                Organisez vos livres par catégories et sous-catégories.
+            </p>
+        </field>
+    </record>
+
+</odoo>

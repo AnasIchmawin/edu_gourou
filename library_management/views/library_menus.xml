@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Menu principal -->
+    <menuitem id="menu_library_root"
+              name="Bibliothèque"
+              sequence="10"
+              web_icon="library_management,static/description/icon.png"/>
+
+    <!-- Sous-menus -->
+    <menuitem id="menu_library_books"
+              name="Livres"
+              parent="menu_library_root"
+              sequence="10"/>
+
+    <menuitem id="menu_library_book_all"
+              name="Tous les livres"
+              parent="menu_library_books"
+              action="action_library_book"
+              sequence="10"/>
+
+    <menuitem id="menu_library_book_available"
+              name="Livres disponibles"
+              parent="menu_library_books"
+              action="action_library_book_available"
+              sequence="20"/>
+
+    <menuitem id="menu_library_book_borrowed"
+              name="Livres empruntés"
+              parent="menu_library_books"
+              action="action_library_book_borrowed"
+              sequence="30"/>
+
+    <menuitem id="menu_library_borrowings"
+              name="Emprunts"
+              parent="menu_library_root"
+              sequence="20"/>
+
+    <menuitem id="menu_library_borrowing_all"
+              name="Tous les emprunts"
+              parent="menu_library_borrowings"
+              action="action_library_borrowing"
+              sequence="10"/>
+
+    <menuitem id="menu_library_borrowing_current"
+              name="Emprunts en cours"
+              parent="menu_library_borrowings"
+              action="action_library_borrowing_current"
+              sequence="20"/>
+
+    <menuitem id="menu_library_borrowing_late"
+              name="Emprunts en retard"
+              parent="menu_library_borrowings"
+              action="action_library_borrowing_late"
+              sequence="30"/>
+
+    <menuitem id="menu_library_configuration"
+              name="Configuration"
+              parent="menu_library_root"
+              sequence="100"/>
+
+    <menuitem id="menu_library_author"
+              name="Auteurs"
+              parent="menu_library_configuration"
+              action="action_library_author"
+              sequence="10"/>
+
+    <menuitem id="menu_library_category"
+              name="Catégories"
+              parent="menu_library_configuration"
+              action="action_library_category"
+              sequence="20"/>
+
+</odoo>
