@@ -5,7 +5,7 @@
     <menuitem id="menu_library_root"
               name="Bibliothèque"
               sequence="10"
-              web_icon="library_management,static/description/icon.ico"/>
+              web_icon="library_management,static/description/icon.png"/>
 
     <!-- Tableau de bord -->
     <menuitem id="menu_library_dashboard"
@@ -59,6 +59,29 @@
               name="Emprunts en retard"
               parent="menu_library_borrowings"
               action="action_library_borrowing_late"
+              sequence="30"/>
+
+    <menuitem id="menu_library_reservations"
+              name="Réservations"
+              parent="menu_library_root"
+              sequence="35"/>
+
+    <menuitem id="menu_library_reservation_all"
+              name="Toutes les réservations"
+              parent="menu_library_reservations"
+              action="action_library_reservation"
+              sequence="10"/>
+
+    <menuitem id="menu_library_reservation_pending"
+              name="En attente"
+              parent="menu_library_reservations"
+              action="action_library_reservation_pending"
+              sequence="20"/>
+
+    <menuitem id="menu_library_reservation_available"
+              name="Disponibles à récupérer"
+              parent="menu_library_reservations"
+              action="action_library_reservation_available"
               sequence="30"/>
 
     <menuitem id="menu_library_members"

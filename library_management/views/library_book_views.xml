@@ -21,6 +21,19 @@
                            statusbar_visible="available,borrowed,reserved"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_borrowings" type="object" 
+                                class="oe_stat_button" icon="fa-book">
+                            <field name="borrowing_count" widget="statinfo" 
+                                   string="Emprunts"/>
+                        </button>
+                        <button name="action_view_reservations" type="object" 
+                                class="oe_stat_button" icon="fa-bookmark"
+                                invisible="reservation_count == 0">
+                            <field name="reservation_count" widget="statinfo" 
+                                   string="Réservations"/>
+                        </button>
+                    </div>
                     <field name="cover_image" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
                         <h1>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vue formulaire des réservations -->
+    <record id="view_library_reservation_form" model="ir.ui.view">
+        <field name="name">library.reservation.form</field>
+        <field name="model">library.reservation</field>
+        <field name="arch" type="xml">
+            <form string="Réservation">
+                <header>
+                    <button name="action_notify_available" string="Notifier Disponibilité"
+                            type="object" class="oe_highlight"
+                            invisible="state != 'pending'"
+                            help="Informer l'adhérent que le livre est disponible"/>
+                    <button name="action_mark_picked_up" string="Marquer comme Récupéré"
+                            type="object" class="oe_highlight"
+                            invisible="state != 'available'"
+                            help="Créer l'emprunt et marquer comme récupéré"/>
+                    <button name="action_cancel" string="Annuler"
+                            type="object"
+                            invisible="state in ['picked_up', 'expired', 'cancelled']"
+                            confirm="Êtes-vous sûr de vouloir annuler cette réservation ?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,available,picked_up"/>
+                </header>
+                <sheet>
+                    <field name="book_cover" widget="image" class="oe_avatar"
+                           options="{'size': [90, 120]}"/>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Livre">
+                            <field name="book_id" options="{'no_create': True}"/>
+                            <field name="book_title" readonly="1"/>
+                            <field name="book_author" readonly="1"/>
+                        </group>
+                        <group string="Adhérent">
+                            <field name="member_id" options="{'no_create': True}"/>
+                            <field name="member_name" readonly="1"/>
+                            <field name="member_email" readonly="1"/>
+                            <field name="member_state" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group string="Dates">
+                            <field name="reservation_date"/>
+                            <field name="notified_date" readonly="1"/>
+                            <field name="expiry_date" readonly="1"
+                                   invisible="state != 'available'"/>
+                            <field name="pickup_date" readonly="1"
+                                   invisible="state != 'picked_up'"/>
+                            <field name="cancelled_date" readonly="1"
+                                   invisible="state != 'cancelled'"/>
+                        </group>
+                        <group string="Informations">
+                            <field name="priority" readonly="1"
+                                   invisible="state != 'pending'"
+                                   help="Position dans la file d'attente"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes" placeholder="Notes sur la réservation..."/>
+                        </page>
+                        <page string="Annulation" invisible="state != 'cancelled'">
+                            <group>
+                                <field name="cancellation_reason" nolabel="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste des réservations -->
+    <record id="view_library_reservation_tree" model="ir.ui.view">
+        <field name="name">library.reservation.tree</field>
+        <field name="model">library.reservation</field>
+        <field name="arch" type="xml">
+            <tree string="Réservations"
+                  decoration-warning="state == 'pending'"
+                  decoration-success="state == 'available'"
+                  decoration-info="state == 'picked_up'"
+                  decoration-muted="state in ['expired', 'cancelled']">
+                <field name="name"/>
+                <field name="priority" invisible="1"/>
+                <field name="member_name"/>
+                <field name="book_title"/>
+                <field name="book_author"/>
+                <field name="reservation_date"/>
+                <field name="expiry_date" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'pending'"
+                       decoration-success="state == 'available'"
+                       decoration-info="state == 'picked_up'"
+                       decoration-muted="state in ['expired', 'cancelled']"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vue Kanban des réservations -->
+    <record id="view_library_reservation_kanban" model="ir.ui.view">
+        <field name="name">library.reservation.kanban</field>
+        <field name="model">library.reservation</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="member_name"/>
+                <field name="book_title"/>
+                <field name="book_cover"/>
+                <field name="state"/>
+                <field name="priority"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_image">
+                                <img t-att-src="kanban_image('library.reservation', 'book_cover', record.id.raw_value)"
+                                     alt="Book Cover" style="max-height: 80px;"/>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong>
+                                    <field name="book_title"/>
+                                </strong>
+                                <div>
+                                    <i class="fa fa-user"/> <field name="member_name"/>
+                                </div>
+                                <div t-if="record.priority.value > 0">
+                                    <i class="fa fa-list-ol"/> Position: <field name="priority"/>
+                                </div>
+                                <div>
+                                    <field name="state" widget="label"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vue recherche -->
+    <record id="view_library_reservation_search" model="ir.ui.view">
+        <field name="name">library.reservation.search</field>
+        <field name="model">library.reservation</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher réservations">
+                <field name="name"/>
+                <field name="member_name"/>
+                <field name="book_title"/>
+                <field name="book_author"/>
+                <filter string="En attente" name="pending"
+                        domain="[('state', '=', 'pending')]"/>
+                <filter string="Disponibles" name="available"
+                        domain="[('state', '=', 'available')]"/>
+                <filter string="Récupérées" name="picked_up"
+                        domain="[('state', '=', 'picked_up')]"/>
+                <filter string="Expirées" name="expired"
+                        domain="[('state', '=', 'expired')]"/>
+                <separator/>
+                <group expand="0" string="Grouper par">
+                    <filter string="Adhérent" name="group_member"
+                            context="{'group_by': 'member_id'}"/>
+                    <filter string="Livre" name="group_book"
+                            context="{'group_by': 'book_id'}"/>
+                    <filter string="État" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_library_reservation" model="ir.actions.act_window">
+        <field name="name">Réservations</field>
+        <field name="res_model">library.reservation</field>
+        <field name="view_mode">tree,kanban,form</field>
+    </record>
+
+    <record id="action_library_reservation_pending" model="ir.actions.act_window">
+        <field name="name">Réservations en attente</field>
+        <field name="res_model">library.reservation</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[('state', '=', 'pending')]</field>
+        <field name="context">{'search_default_pending': 1}</field>
+    </record>
+
+    <record id="action_library_reservation_available" model="ir.actions.act_window">
+        <field name="name">Réservations disponibles</field>
+        <field name="res_model">library.reservation</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[('state', '=', 'available')]</field>
+        <field name="context">{'search_default_available': 1}</field>
+    </record>
+
+</odoo>

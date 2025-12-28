@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Séquence pour les réservations -->
+        <record id="seq_library_reservation" model="ir.sequence">
+            <field name="name">Réservation de livre</field>
+            <field name="code">library.reservation</field>
+            <field name="prefix">RES</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <!-- Template email: Confirmation de réservation -->
+        <record id="email_template_reservation_confirmed" model="mail.template">
+            <field name="name">Réservation confirmée</field>
+            <field name="model_id" ref="model_library_reservation"/>
+            <field name="subject">📚 Réservation confirmée - "{{ object.book_title }}"</field>
+            <field name="email_from">{{ user.email or '' }}</field>
+            <field name="email_to">{{ object.member_email }}</field>
+            <field name="body_html"><![CDATA[
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #28a745;">📚 Réservation confirmée !</h2>
+                    
+                    <p style="font-size: 16px;">
+                        Bonjour {{ object.member_name }},
+                    </p>
+                    
+                    <p style="font-size: 16px;">
+                        Votre réservation a été enregistrée avec succès.
+                    </p>
+                    
+                    <div style="background-color: #e8f5e9; padding: 20px; border-left: 4px solid #28a745; margin: 20px 0;">
+                        <h3 style="margin-top: 0; color: #28a745;">{{ object.book_title }}</h3>
+                        <p><strong>Auteur:</strong> {{ object.book_author or 'N/A' }}</p>
+                        <p><strong>Numéro de réservation:</strong> {{ object.name }}</p>
+                        <p><strong>Date de réservation:</strong> {{ object.reservation_date }}</p>
+                        {% if object.priority > 0 %}
+                        <p><strong>Position dans la file:</strong> <span style="color: #ff9800; font-size: 18px;">{{ object.priority }}</span></p>
+                        {% endif %}
+                    </div>
+                    
+                    <p style="font-size: 16px;">
+                        <strong>Prochaines étapes :</strong>
+                    </p>
+                    <ol style="font-size: 14px;">
+                        <li>Nous vous notifierons par email dès que le livre sera disponible</li>
+                        <li>Vous aurez <strong>3 jours</strong> pour venir récupérer le livre</li>
+                        <li>Passé ce délai, la réservation sera annulée automatiquement</li>
+                    </ol>
+                    
+                    <p style="font-size: 14px; background-color: #fff3cd; padding: 10px; border-radius: 5px;">
+                        💡 <strong>Astuce :</strong> Vous pouvez suivre l'état de votre réservation dans votre espace adhérent.
+                    </p>
+                    
+                    <p style="color: #6c757d; font-size: 14px; margin-top: 30px;">
+                        Cordialement,<br/>
+                        L'équipe de la bibliothèque
+                    </p>
+                </div>
+            ]]></field>
+        </record>
+
+        <!-- Template email: Livre disponible -->
+        <record id="email_template_reservation_available" model="mail.template">
+            <field name="name">Livre disponible - Réservation</field>
+            <field name="model_id" ref="model_library_reservation"/>
+            <field name="subject">🎉 Votre livre est disponible ! - "{{ object.book_title }}"</field>
+            <field name="email_from">{{ user.email or '' }}</field>
+            <field name="email_to">{{ object.member_email }}</field>
+            <field name="body_html"><![CDATA[
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #28a745;">🎉 Bonne nouvelle !</h2>
+                    
+                    <p style="font-size: 16px;">
+                        Bonjour {{ object.member_name }},
+                    </p>
+                    
+                    <p style="font-size: 18px; color: #28a745;">
+                        <strong>Le livre que vous avez réservé est maintenant disponible !</strong>
+                    </p>
+                    
+                    <div style="background-color: #d4edda; padding: 20px; border-left: 4px solid #28a745; margin: 20px 0;">
+                        <h3 style="margin-top: 0; color: #28a745;">{{ object.book_title }}</h3>
+                        <p><strong>Auteur:</strong> {{ object.book_author or 'N/A' }}</p>
+                        <p><strong>Numéro de réservation:</strong> {{ object.name }}</p>
+                    </div>
+                    
+                    <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0;">
+                        <p style="margin: 0; font-size: 16px;">
+                            ⏰ <strong>Important :</strong> Vous avez jusqu'au <strong style="color: #dc3545;">{{ object.expiry_date }}</strong> pour venir récupérer votre livre.
+                        </p>
+                    </div>
+                    
+                    <p style="font-size: 16px;">
+                        <strong>Pour récupérer votre livre :</strong>
+                    </p>
+                    <ol style="font-size: 14px;">
+                        <li>Présentez-vous au comptoir de prêt</li>
+                        <li>Indiquez votre numéro de carte : <strong>{{ object.member_id.member_number }}</strong></li>
+                        <li>Mentionnez le numéro de réservation : <strong>{{ object.name }}</strong></li>
+                    </ol>
+                    
+                    <div style="background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-top: 20px;">
+                        <p style="margin: 0; font-size: 14px; color: #721c24;">
+                            ⚠️ <strong>Attention :</strong> Si le livre n'est pas récupéré avant le {{ object.expiry_date }}, votre réservation sera automatiquement annulée.
+                        </p>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <p style="font-size: 16px; color: #28a745;">
+                            <strong>À très bientôt à la bibliothèque ! 📚</strong>
+                        </p>
+                    </div>
+                    
+                    <p style="color: #6c757d; font-size: 14px; margin-top: 30px;">
+                        Cordialement,<br/>
+                        L'équipe de la bibliothèque
+                    </p>
+                </div>
+            ]]></field>
+        </record>
+
+        <!-- Cron job: Vérifier réservations expirées -->
+        <record id="ir_cron_reservation_expired" model="ir.cron">
+            <field name="name">Bibliothèque: Vérifier réservations expirées</field>
+            <field name="model_id" ref="model_library_reservation"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_expired_reservations()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Cron job: Traiter file d'attente -->
+        <record id="ir_cron_reservation_queue" model="ir.cron">
+            <field name="name">Bibliothèque: Traiter file d'attente réservations</field>
+            <field name="model_id" ref="model_library_reservation"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_process_queue_when_book_returned()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>
