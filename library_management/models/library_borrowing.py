@@ -13,6 +13,7 @@ class LibraryBorrowing(models.Model):
     name = fields.Char(string='Référence', required=True, copy=False, readonly=True, 
                        default='Nouveau')
     book_id = fields.Many2one('library.book', string='Livre', required=True, tracking=True)
+    member_id = fields.Many2one('library.member', string='Adhérent', tracking=True)
     borrower_name = fields.Char(string='Nom de l\'emprunteur', required=True, tracking=True)
     borrower_email = fields.Char(string='Email de l\'emprunteur')
     borrower_phone = fields.Char(string='Téléphone de l\'emprunteur')
@@ -42,6 +43,13 @@ class LibraryBorrowing(models.Model):
         if vals.get('name', 'Nouveau') == 'Nouveau':
             vals['name'] = self.env['ir.sequence'].next_by_code('library.borrowing') or 'Nouveau'
         return super(LibraryBorrowing, self).create(vals)
+
+    @api.onchange('member_id')
+    def _onchange_member_id(self):
+        if self.member_id:
+            self.borrower_name = self.member_id.name
+            self.borrower_email = self.member_id.email
+            self.borrower_phone = self.member_id.phone or self.member_id.mobile
 
     @api.onchange('borrowing_date')
     def _onchange_borrowing_date(self):

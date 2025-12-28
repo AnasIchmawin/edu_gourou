@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vue formulaire des pénalités -->
+    <record id="view_library_penalty_form" model="ir.ui.view">
+        <field name="name">library.penalty.form</field>
+        <field name="model">library.penalty</field>
+        <field name="arch" type="xml">
+            <form string="Pénalité">
+                <header>
+                    <button name="action_confirm" string="Confirmer" 
+                            type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_register_payment" string="Enregistrer un paiement" 
+                            type="object" class="oe_highlight"
+                            invisible="state not in ['confirmed']"/>
+                    <button name="action_cancel" string="Annuler" 
+                            type="object"
+                            invisible="state in ['paid', 'cancelled']"/>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,confirmed,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="borrowing_id"/>
+                            <field name="member_id"/>
+                            <field name="book_id"/>
+                        </group>
+                        <group>
+                            <field name="late_days"/>
+                            <field name="daily_rate" widget="monetary"/>
+                            <field name="penalty_amount" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="payment_date"/>
+                            <field name="payment_amount" widget="monetary"/>
+                            <field name="remaining_amount" widget="monetary"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes" placeholder="Notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste des pénalités -->
+    <record id="view_library_penalty_tree" model="ir.ui.view">
+        <field name="name">library.penalty.tree</field>
+        <field name="model">library.penalty</field>
+        <field name="arch" type="xml">
+            <tree string="Pénalités" decoration-success="state == 'paid'"
+                  decoration-danger="state == 'confirmed'">
+                <field name="name"/>
+                <field name="member_id"/>
+                <field name="book_id"/>
+                <field name="late_days"/>
+                <field name="penalty_amount" widget="monetary"/>
+                <field name="payment_amount" widget="monetary"/>
+                <field name="remaining_amount" widget="monetary"/>
+                <field name="state" widget="badge"/>
+                <field name="currency_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_library_penalty" model="ir.actions.act_window">
+        <field name="name">Pénalités</field>
+        <field name="res_model">library.penalty</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_library_penalty_unpaid" model="ir.actions.act_window">
+        <field name="name">Pénalités impayées</field>
+        <field name="res_model">library.penalty</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', '=', 'confirmed')]</field>
+    </record>
+
+</odoo>

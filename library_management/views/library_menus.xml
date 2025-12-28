@@ -7,6 +7,13 @@
               sequence="10"
               web_icon="library_management,static/description/icon.png"/>
 
+    <!-- Tableau de bord -->
+    <menuitem id="menu_library_dashboard"
+              name="Tableau de bord"
+              parent="menu_library_root"
+              action="action_library_dashboard"
+              sequence="5"/>
+
     <!-- Sous-menus -->
     <menuitem id="menu_library_books"
               name="Livres"
@@ -53,6 +60,80 @@
               parent="menu_library_borrowings"
               action="action_library_borrowing_late"
               sequence="30"/>
+
+    <menuitem id="menu_library_members"
+              name="Adhérents"
+              parent="menu_library_root"
+              sequence="30"/>
+
+    <menuitem id="menu_library_member_all"
+              name="Tous les adhérents"
+              parent="menu_library_members"
+              action="action_library_member"
+              sequence="10"/>
+
+    <menuitem id="menu_library_member_active"
+              name="Adhérents actifs"
+              parent="menu_library_members"
+              action="action_library_member_active"
+              sequence="20"/>
+
+    <menuitem id="menu_library_member_expired"
+              name="Adhérents expirés"
+              parent="menu_library_members"
+              action="action_library_member_expired"
+              sequence="30"/>
+
+    <menuitem id="menu_library_reports"
+              name="Rapports"
+              parent="menu_library_root"
+              sequence="90"/>
+
+    <menuitem id="menu_library_borrowing_analysis"
+              name="Analyse des emprunts"
+              parent="menu_library_reports"
+              action="action_library_borrowing_analysis"
+              sequence="10"/>
+
+    <menuitem id="menu_library_book_analysis"
+              name="Analyse des livres"
+              parent="menu_library_reports"
+              action="action_library_book_analysis"
+              sequence="20"/>
+
+    <menuitem id="menu_library_financial"
+              name="Finances"
+              parent="menu_library_root"
+              sequence="40"/>
+
+    <menuitem id="menu_library_penalty"
+              name="Pénalités"
+              parent="menu_library_financial"
+              action="action_library_penalty"
+              sequence="10"/>
+
+    <menuitem id="menu_library_penalty_unpaid"
+              name="Pénalités impayées"
+              parent="menu_library_financial"
+              action="action_library_penalty_unpaid"
+              sequence="20"/>
+
+    <menuitem id="menu_library_membership_fee"
+              name="Frais d'adhésion"
+              parent="menu_library_financial"
+              action="action_library_membership_fee"
+              sequence="30"/>
+
+    <menuitem id="menu_library_import_export"
+              name="Import/Export"
+              parent="menu_library_root"
+              sequence="95"/>
+
+    <menuitem id="menu_library_book_import"
+              name="Importer des livres"
+              parent="menu_library_import_export"
+              action="action_library_book_import_wizard"
+              sequence="10"/>
 
     <menuitem id="menu_library_configuration"
               name="Configuration"

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vue formulaire du tableau de bord -->
+    <record id="view_library_dashboard_form" model="ir.ui.view">
+        <field name="name">library.dashboard.form</field>
+        <field name="model">library.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Tableau de bord" create="false" edit="false" delete="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Tableau de bord de la Bibliothèque</h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Statistiques des Livres">
+                            <field name="total_books" readonly="1"/>
+                            <field name="available_books" readonly="1"/>
+                            <field name="borrowed_books" readonly="1"/>
+                            <field name="reserved_books" readonly="1"/>
+                            <field name="lost_books" readonly="1"/>
+                            <field name="occupation_rate" readonly="1" widget="percentage"/>
+                        </group>
+                        
+                        <group string="Statistiques des Emprunts">
+                            <field name="total_borrowings" readonly="1"/>
+                            <field name="active_borrowings" readonly="1"/>
+                            <field name="late_borrowings" readonly="1"/>
+                            <field name="returned_borrowings" readonly="1"/>
+                            <field name="late_rate" readonly="1" widget="percentage"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group string="Statistiques des Adhérents">
+                            <field name="total_members" readonly="1"/>
+                            <field name="active_members" readonly="1"/>
+                            <field name="expired_members" readonly="1"/>
+                            <field name="suspended_members" readonly="1"/>
+                        </group>
+                        
+                        <group string="Statistiques Générales">
+                            <field name="total_authors" readonly="1"/>
+                            <field name="total_categories" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue graphique - Emprunts par mois -->
+    <record id="view_library_borrowing_graph" model="ir.ui.view">
+        <field name="name">library.borrowing.graph</field>
+        <field name="model">library.borrowing</field>
+        <field name="arch" type="xml">
+            <graph string="Emprunts par mois" type="bar">
+                <field name="borrowing_date" interval="month"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Vue pivot - Analyse des emprunts -->
+    <record id="view_library_borrowing_pivot" model="ir.ui.view">
+        <field name="name">library.borrowing.pivot</field>
+        <field name="model">library.borrowing</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse des emprunts">
+                <field name="borrowing_date" interval="month" type="row"/>
+                <field name="state" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Vue graphique - Livres par catégorie -->
+    <record id="view_library_book_graph" model="ir.ui.view">
+        <field name="name">library.book.graph</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+            <graph string="Livres par catégorie" type="pie">
+                <field name="category_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Vue graphique - Livres par état -->
+    <record id="view_library_book_graph_state" model="ir.ui.view">
+        <field name="name">library.book.graph.state</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+            <graph string="Livres par état" type="pie">
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_library_dashboard" model="ir.actions.act_window">
+        <field name="name">Tableau de bord</field>
+        <field name="res_model">library.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+    <record id="action_library_borrowing_analysis" model="ir.actions.act_window">
+        <field name="name">Analyse des Emprunts</field>
+        <field name="res_model">library.borrowing</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Analyses statistiques des emprunts
+            </p>
+        </field>
+    </record>
+
+    <record id="action_library_book_analysis" model="ir.actions.act_window">
+        <field name="name">Analyse des Livres</field>
+        <field name="res_model">library.book</field>
+        <field name="view_mode">graph</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Analyses statistiques des livres
+            </p>
+        </field>
+    </record>
+
+</odoo>

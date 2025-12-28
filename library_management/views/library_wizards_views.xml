@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Wizard paiement de pénalité -->
+    <record id="view_library_penalty_payment_wizard_form" model="ir.ui.view">
+        <field name="name">library.penalty.payment.wizard.form</field>
+        <field name="model">library.penalty.payment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Enregistrer un paiement">
+                <group>
+                    <field name="penalty_id" invisible="1"/>
+                    <field name="amount" widget="monetary"/>
+                    <field name="payment_date"/>
+                    <field name="payment_method"/>
+                    <field name="currency_id" invisible="1"/>
+                </group>
+                <group>
+                    <field name="notes" placeholder="Notes sur le paiement..."/>
+                </group>
+                <footer>
+                    <button name="action_confirm_payment" string="Confirmer" 
+                            type="object" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard import de livres -->
+    <record id="view_library_book_import_wizard_form" model="ir.ui.view">
+        <field name="name">library.book.import.wizard.form</field>
+        <field name="model">library.book.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Importer des livres">
+                <group>
+                    <field name="file_data" filename="file_name" widget="binary"/>
+                    <field name="file_name" invisible="1"/>
+                    <field name="import_type"/>
+                </group>
+                <group>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Format attendu :</strong><br/>
+                        CSV avec colonnes: isbn, title, author, category, publisher, pages<br/>
+                        <button name="action_download_template" string="📥 Télécharger le modèle" 
+                                type="object" class="btn-link"/>
+                    </div>
+                </group>
+                <footer>
+                    <button name="action_import_books" string="Importer" 
+                            type="object" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action wizard import -->
+    <record id="action_library_book_import_wizard" model="ir.actions.act_window">
+        <field name="name">Importer des livres</field>
+        <field name="res_model">library.book.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

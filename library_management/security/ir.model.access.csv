@@ -2,4 +2,10 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_library_book_user,library.book.user,model_library_book,base.group_user,1,1,1,1
 access_library_author_user,library.author.user,model_library_author,base.group_user,1,1,1,1
 access_library_category_user,library.category.user,model_library_category,base.group_user,1,1,1,1
+access_library_member_user,library.member.user,model_library_member,base.group_user,1,1,1,1
 access_library_borrowing_user,library.borrowing.user,model_library_borrowing,base.group_user,1,1,1,1
+access_library_dashboard_user,library.dashboard.user,model_library_dashboard,base.group_user,1,0,0,0
+access_library_penalty_user,library.penalty.user,model_library_penalty,base.group_user,1,1,1,1
+access_library_membership_fee_user,library.membership.fee.user,model_library_membership_fee,base.group_user,1,1,1,1
+access_library_penalty_payment_wizard_user,library.penalty.payment.wizard.user,model_library_penalty_payment_wizard,base.group_user,1,1,1,1
+access_library_book_import_wizard_user,library.book.import.wizard.user,model_library_book_import_wizard,base.group_user,1,1,1,1

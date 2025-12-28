@@ -11,6 +11,33 @@
             <field name="number_increment">1</field>
         </record>
 
+        <!-- Séquence pour les adhérents -->
+        <record id="seq_library_member" model="ir.sequence">
+            <field name="name">Numéro de carte adhérent</field>
+            <field name="code">library.member</field>
+            <field name="prefix">ADH</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <!-- Séquence pour les pénalités -->
+        <record id="seq_library_penalty" model="ir.sequence">
+            <field name="name">Pénalité de retard</field>
+            <field name="code">library.penalty</field>
+            <field name="prefix">PEN</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <!-- Séquence pour les frais d'adhésion -->
+        <record id="seq_library_membership_fee" model="ir.sequence">
+            <field name="name">Frais d'adhésion</field>
+            <field name="code">library.membership.fee</field>
+            <field name="prefix">FEE</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+        </record>
+
         <!-- Catégories de livres -->
         <record id="category_fiction" model="library.category">
             <field name="name">Fiction</field>
@@ -109,6 +136,38 @@
             <field name="pages">186</field>
             <field name="description">Premier roman d'Albert Camus, publié en 1942, représentant la philosophie de l'absurde.</field>
             <field name="state">available</field>
+        </record>
+
+        <!-- Adhérents exemples -->
+        <record id="member_jean_dupont" model="library.member">
+            <field name="name">Jean Dupont</field>
+            <field name="member_number">ADH00001</field>
+            <field name="email">jean.dupont@example.com</field>
+            <field name="phone">0601020304</field>
+            <field name="member_type">student</field>
+            <field name="registration_date" eval="(DateTime.today() - timedelta(days=180)).strftime('%Y-%m-%d')"/>
+            <field name="address">123 Rue de la Paix, 75001 Paris</field>
+        </record>
+
+        <record id="member_marie_martin" model="library.member">
+            <field name="name">Marie Martin</field>
+            <field name="member_number">ADH00002</field>
+            <field name="email">marie.martin@example.com</field>
+            <field name="phone">0602030405</field>
+            <field name="member_type">teacher</field>
+            <field name="registration_date" eval="(DateTime.today() - timedelta(days=90)).strftime('%Y-%m-%d')"/>
+            <field name="address">456 Avenue des Champs, 75008 Paris</field>
+        </record>
+
+        <record id="member_pierre_bernard" model="library.member">
+            <field name="name">Pierre Bernard</field>
+            <field name="member_number">ADH00003</field>
+            <field name="email">pierre.bernard@example.com</field>
+            <field name="phone">0603040506</field>
+            <field name="mobile">0703040506</field>
+            <field name="member_type">external</field>
+            <field name="registration_date" eval="(DateTime.today() - timedelta(days=30)).strftime('%Y-%m-%d')"/>
+            <field name="address">789 Boulevard Saint-Germain, 75006 Paris</field>
         </record>
 
         <!-- Tâche cron pour vérifier les emprunts en retard -->
