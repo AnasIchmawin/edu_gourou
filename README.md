@@ -237,7 +237,7 @@ Cette commande lance deux conteneurs :
 - Odoo (version 17.0) sur le port 8069
 - PostgreSQL (version 15) pour la base de données
 
-mettre le chemin du dossier du projet dans odoo.config; pour qu'odoo detecte l'emplacement de notre module .
+Ensuite il faut mettre le chemin du dossier du projet dans odoo.config; pour qu'odoo detecte l'emplacement de notre module .
 
 **3. Vérifier que tout démarre bien**
 
