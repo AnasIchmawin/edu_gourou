@@ -1,61 +1,11 @@
+
 # **Rapport de Projet : Module de Gestion de Bibliothèque sous Odoo 17**
-## 9. Conclusion
 
-Le développement de ce module de gestion de bibliothèque sous **Odoo 17** a permis d’atteindre tous les objectifs fixés, tout en créant une solution complète et facile à utiliser.
+## 1. Introduction
 
-### 9.1. Bilan du travail
+Ce rapport présente le développement d'un module de gestion de bibliothèque sous **Odoo 17**. Il détaille les objectifs, la conception, les fonctionnalités, les résultats obtenus et les perspectives d'amélioration.
 
-Le module couvre tout ce qu’on attend d’une bibliothèque moderne :
-
-- Gestion du catalogue (livres, auteurs, catégories)
-- Workflow d’emprunt et de retour avec gestion des retards
-- Gestion des membres et de leurs adhésions
-- Système de réservations avec file d’attente
-- Gestion financière (pénalités, frais d’adhésion)
-- Notifications automatiques (email et Odoo)
-- Tableau de bord avec graphiques et indicateurs
-- Import rapide du catalogue par CSV
-
-L’architecture respecte les standards Odoo, avec une séparation claire entre modèles, vues, assistants et données. Le code est bien structuré, documenté, et utilise les fonctions avancées du framework (champs calculés, workflows, tâches automatiques, héritage de modèles).
-
-
-### 9.2. Compétences acquises
-
-Ce projet, réalisé en groupe de trois personnes, nous a permis de développer de nombreuses compétences :
-
-**Sur Odoo et les ERP :**
-- Comprendre l’architecture modulaire d’Odoo
-- Créer des modèles de données avec l’ORM
-- Concevoir des vues (formulaires, listes, Kanban, graphiques…)
-- Mettre en place des workflows métier
-- Gérer la sécurité et les droits d’accès
-- Utiliser les fonctions avancées (champs calculés, assistants, tâches automatiques)
-
-**En modélisation et conception :**
-- Analyser les besoins métier et les transformer en spécifications
-- Modéliser les données et les relations
-- Concevoir des workflows et des indicateurs de performance
-
-**Techniquement :**
-- Programmer en Python orienté objet
-- Utiliser le framework Odoo (API, décorateurs, héritage)
-- Gérer l’import de données (CSV)
-- Administrer une base PostgreSQL
-- Déployer avec Docker et Docker Compose
-- Versionner le code et documenter
-
-**Transversalement :**
-- Gérer un projet informatique en équipe
-- Rédiger une documentation claire
-- Adopter une démarche qualité et tester les fonctionnalités
-
-### 9.3. Ouverture
-
-Ce module est une base solide pour aller plus loin. Les idées d’évolution (multi-exemplaires, appli mobile, intégration externe…) pourraient faire l’objet de futurs projets, dans une logique d’amélioration continue.
-
-> *En résumé, ce projet nous a permis, en tant que groupe, de passer de la théorie à la pratique, en créant une solution concrète, utile et professionnelle, tout en maîtrisant les concepts clés de la gestion des processus métier et des ERP.*
-
-### 4.1. Gestion des emprunts et retours
+## 2. Gestion des emprunts et retours
 
 Le cœur du module, c’est le prêt et le retour des livres. Voici comment ça se passe :
 
@@ -77,7 +27,7 @@ Le cœur du module, c’est le prêt et le retour des livres. Voici comment ça 
 - Le statut de l’emprunt passe à *En retard*.
 - Des rappels sont envoyés automatiquement.
 
-### 4.2. Gestion des membres (adhérents)
+## 3. Gestion des membres (adhérents)
 
 **Inscription :**
 - Création d’une fiche membre avec un numéro unique (ex : ADH00001).
@@ -94,9 +44,10 @@ Le cœur du module, c’est le prêt et le retour des livres. Voici comment ça 
 - Nouveau paiement d’adhésion.
 - Date d’expiration mise à jour.
 - Statut repasse à *Actif*.
-## 6. Conception et développement du module Odoo
 
-### 6.1. Modélisation des données
+## 4. Conception et développement du module Odoo
+
+### 4.1. Modélisation des données
 
 Le module s’appuie sur **11 modèles de données** qui sont reliés entre eux, comme dans une vraie base de données relationnelle.
 
@@ -127,7 +78,7 @@ Le module s’appuie sur **11 modèles de données** qui sont reliés entre eux,
 - Statut du membre (actif, expiré, suspendu)
 - Statistiques du tableau de bord en temps réel
 
-### 6.2. Fonctionnalités développées
+### 4.2. Fonctionnalités développées
 
 Le module propose de nombreuses fonctionnalités pratiques :
 
@@ -178,7 +129,7 @@ Le module propose de nombreuses fonctionnalités pratiques :
 - Tableaux croisés dynamiques (Pivot)
 - Boutons d’accès rapide aux vues filtrées
 
-### 6.3. Workflow métier simplifié
+### 4.3. Workflow métier simplifié
 
 Voici le parcours type dans le module :
 
@@ -197,16 +148,16 @@ Voici le parcours type dans le module :
 
 Ce workflow montre la logique et la cohérence du module.
 
-### 6.4. Installation et démarrage du module
+### 4.4. Installation et démarrage du module
 
-#### 6.4.1. Prérequis techniques
+#### 4.4.1. Prérequis techniques
 
 Pour installer le module, il faut :
 - Docker et Docker Compose installés
 - Les ports 8069 (Odoo) et 5432 (PostgreSQL) libres
 - Un système compatible (Windows, Linux, macOS)
 
-#### 6.4.2. Structure du projet
+#### 4.4.2. Structure du projet
 
 Le projet doit être organisé ainsi :
 
@@ -219,7 +170,7 @@ edu_gourou/
     └── static/
 ```
 
-#### 6.4.3. Démarrage rapide
+#### 4.4.3. Démarrage rapide
 
 **1. Placer le projet dans le bon dossier**
 
@@ -271,7 +222,7 @@ L’installation crée automatiquement :
 - Les programmes automatiques (cron jobs)
 - Les séquences de numérotation
 
-### 6.4.4. Commandes Docker utiles
+### 4.4.4. Commandes Docker utiles
 
 **Voir les logs en temps réel**
 
@@ -303,7 +254,7 @@ docker-compose down -v
 docker-compose up -d --build
 ```
 
-#### 6.4.5. Vérification de l’installation
+#### 4.4.5. Vérification de l’installation
 
 Après installation, vérifier que :
 - Le menu "Bibliothèque" apparaît
@@ -328,7 +279,7 @@ L'installation prend quelques secondes et crée automatiquement :
 - Les cron jobs de notification
 - Les séquences de numérotation
 
-### 6.4.4. Commandes Docker utiles
+### 4.4.4. Commandes Docker utiles
 
 **Consulter les logs en temps réel**
 
@@ -360,7 +311,7 @@ docker-compose down -v
 docker-compose up -d --build
 ```
 
-#### 6.4.5. Vérification de l'installation
+#### 4.4.5. Vérification de l'installation
 
 Après installation, vérifier que :
 - Le menu "Bibliothèque" apparaît dans la barre de navigation principale
@@ -372,11 +323,11 @@ En cas de problème, consulter les logs Docker pour identifier l'origine de l'er
 
 ---
 
-## 7. Résultats et illustration de l'application
+## 5. Résultats et illustration de l'application
 
 Voici un aperçu visuel des principales interfaces du module, pour mieux comprendre son fonctionnement.
 
-### 7.1. Tableau de bord et reporting
+### 5.1. Tableau de bord et reporting
 
 Le **tableau de bord** est le point d’entrée du module. Il donne une vue d’ensemble en temps réel sur l’activité de la bibliothèque.
 
@@ -387,7 +338,7 @@ On y retrouve les chiffres clés (livres disponibles, emprunts en cours, membres
 ![Graphique des emprunts par mois](./images/graph_emprunts.png)
 Ce graphique permet de voir l’évolution des emprunts au fil des mois.
 
-### 7.2. Gestion du catalogue de livres
+### 5.2. Gestion du catalogue de livres
 
 La **vue Kanban** des livres est très visuelle et pratique pour parcourir le catalogue.
 
@@ -398,7 +349,7 @@ Chaque carte montre la couverture, le titre, l’auteur, la catégorie et l’é
 ![Formulaire de livre](./images/livre_form.png)
 Le formulaire d’un livre permet de saisir toutes les infos et de voir l’historique des emprunts.
 
-### 7.3. Gestion des membres
+### 5.3. Gestion des membres
 
 La fiche membre regroupe toutes les infos et statistiques sur un adhérent.
 
@@ -406,7 +357,7 @@ La fiche membre regroupe toutes les infos et statistiques sur un adhérent.
 
 Des boutons rapides permettent d’accéder à ses emprunts, pénalités et paiements d’adhésion.
 
-### 7.4. Gestion des emprunts
+### 5.4. Gestion des emprunts
 
 La liste des emprunts permet de suivre l’état de chaque prêt et de gérer les retours.
 
@@ -417,7 +368,7 @@ Les emprunts en retard sont affichés en rouge pour être repérés facilement.
 ![Formulaire d'emprunt](./images/emprunt_form.png)
 Le formulaire d’emprunt affiche une barre d’état et des boutons d’action selon le contexte.
 
-### 7.5. Système de réservations
+### 5.5. Système de réservations
 
 Les membres peuvent réserver des livres déjà empruntés.
 
@@ -425,7 +376,7 @@ Les membres peuvent réserver des livres déjà empruntés.
 
 On voit la position dans la file d’attente, et le statut change automatiquement quand le livre redevient disponible.
 
-### 7.6. Gestion financière
+### 5.6. Gestion financière
 
 Le module gère les pénalités de retard et les frais d’adhésion de façon claire.
 
@@ -435,7 +386,7 @@ Le module gère les pénalités de retard et les frais d’adhésion de façon c
 
 L’assistant de paiement permet d’enregistrer un paiement partiel ou total, en choisissant le moyen de paiement.
 
-### 7.7. Notifications automatiques
+### 5.7. Notifications automatiques
 
 Un journal garde la trace de toutes les notifications envoyées.
 
@@ -445,7 +396,7 @@ Un journal garde la trace de toutes les notifications envoyées.
 
 On peut configurer les délais, fréquences et méthodes d’envoi (email, Odoo, ou les deux).
 
-### 7.8. Import de catalogue CSV
+### 5.8. Import de catalogue CSV
 
 Un assistant facilite l’import en masse de livres.
 
@@ -455,11 +406,11 @@ L’import crée automatiquement les auteurs et catégories manquants, et génè
 
 ---
 
-## 8. Limites du projet et perspectives d'amélioration
+## 6. Limites du projet et perspectives d'amélioration
 
 Même si le module est complet, il reste des points à améliorer ou à ajouter.
 
-### 8.1. Limites actuelles
+### 6.1. Limites actuelles
 
 **Fonctionnalités non présentes :**
 - Un seul exemplaire par livre (pas de gestion multi-exemplaires)
@@ -477,7 +428,7 @@ Même si le module est complet, il reste des points à améliorer ou à ajouter.
 - Interface pensée pour ordinateur, moins adaptée aux tablettes et smartphones
 - Certaines actions demandent plusieurs clics
 
-### 8.2. Idées d’amélioration
+### 6.2. Idées d’amélioration
 
 **Fonctionnalités à ajouter :**
 - Gérer plusieurs exemplaires d’un même livre
@@ -498,11 +449,11 @@ Même si le module est complet, il reste des points à améliorer ou à ajouter.
 
 ---
 
-## 9. Conclusion
+## 7. Conclusion
 
 Le projet de développement d'un module de gestion de bibliothèque sous **Odoo 17** a permis d'atteindre les objectifs pédagogiques fixés, tout en produisant une solution fonctionnelle et complète.
 
-### 9.1. Bilan du travail réalisé
+### 7.1. Bilan du travail réalisé
 
 Le module développé couvre l'ensemble du périmètre fonctionnel d'une bibliothèque moderne :
 
@@ -517,7 +468,7 @@ Le module développé couvre l'ensemble du périmètre fonctionnel d'une bibliot
 
 L'architecture du module respecte les standards Odoo, avec une séparation claire entre modèles, vues, wizards, et données. Le code est documenté, structuré, et utilise les mécanismes avancés du framework (champs calculés, workflows, cron jobs, héritage de modèles).
 
-### 9.2. Compétences acquises
+### 7.2. Compétences acquises
 
 Ce projet a permis de développer un ensemble de compétences techniques et méthodologiques :
 
@@ -548,7 +499,7 @@ Ce projet a permis de développer un ensemble de compétences techniques et mét
 - Documentation technique et rédaction de rapports.
 - Démarche qualité et tests fonctionnels.
 
-### 9.3. Ouverture
+### 7.3. Ouverture
 
 Ce projet constitue une base solide pour des développements futurs. Les perspectives d'évolution identifiées (gestion multi-exemplaires, application mobile, intégration externe) pourraient faire l'objet de projets ultérieurs, illustrant ainsi la démarche d'amélioration continue caractéristique des systèmes ERP en environnement professionnel.
 
