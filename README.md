@@ -202,7 +202,7 @@ Ce workflow montre la logique et la cohérence du module.
 #### 6.4.1. Prérequis techniques
 
 Pour installer le module, il faut :
-- Docker et Docker Compose installés
+- Docker et Docker Compose installés ou bien installé odoo V17 localement 
 - Les ports 8069 (Odoo) et 5432 (PostgreSQL) libres
 - Un système compatible (Windows, Linux, macOS)
 
