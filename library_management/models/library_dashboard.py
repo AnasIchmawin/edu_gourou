@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 from odoo import models, fields, api
 
@@ -77,3 +77,4 @@ class LibraryDashboard(models.Model):
         for record in self:
             record.total_authors = self.env['library.author'].search_count([])
             record.total_categories = self.env['library.category'].search_count([])
+
