@@ -380,31 +380,29 @@ Voici un aperçu visuel des principales interfaces du module, pour mieux compren
 
 Le **tableau de bord** est le point d’entrée du module. Il donne une vue d’ensemble en temps réel sur l’activité de la bibliothèque.
 
-![Tableau de bord principal](images/dashboard.png)
+![Tableau de bord principal](../images/dashboard.png)
 
 On y retrouve les chiffres clés (livres disponibles, emprunts en cours, membres actifs) et des boutons pour accéder rapidement aux différentes vues.
 
-![Graphique des emprunts par mois](images/graph_emprunts.png)
-
+![Graphique des emprunts par mois](../images/graph_emprunts.png)
 Ce graphique permet de voir l’évolution des emprunts au fil des mois.
 
 ### 7.2. Gestion du catalogue de livres
 
 La **vue Kanban** des livres est très visuelle et pratique pour parcourir le catalogue.
 
-![Vue Kanban des livres](images/livres_kanban.png)
+![Vue Kanban des livres](../images/livres_kanban.png)
 
 Chaque carte montre la couverture, le titre, l’auteur, la catégorie et l’état du livre (avec des couleurs différentes selon le statut).
 
-![Formulaire de livre](images/livre_form.png)
-
+![Formulaire de livre](../images/livre_form.png)
 Le formulaire d’un livre permet de saisir toutes les infos et de voir l’historique des emprunts.
 
 ### 7.3. Gestion des membres
 
 La fiche membre regroupe toutes les infos et statistiques sur un adhérent.
 
-![Fiche adhérent](images/adherent_form.png)
+![Fiche adhérent](../images/adherent_form.png)
 
 Des boutons rapides permettent d’accéder à ses emprunts, pénalités et paiements d’adhésion.
 
@@ -412,19 +410,18 @@ Des boutons rapides permettent d’accéder à ses emprunts, pénalités et paie
 
 La liste des emprunts permet de suivre l’état de chaque prêt et de gérer les retours.
 
-![Liste des emprunts](images/emprunts_liste.png)
+![Liste des emprunts](../images/emprunts_liste.png)
 
 Les emprunts en retard sont affichés en rouge pour être repérés facilement.
 
-![Formulaire d'emprunt](images/emprunt_form.png)
-
+![Formulaire d'emprunt](../images/emprunt_form.png)
 Le formulaire d’emprunt affiche une barre d’état et des boutons d’action selon le contexte.
 
 ### 7.5. Système de réservations
 
 Les membres peuvent réserver des livres déjà empruntés.
 
-![Vue des réservations](images/reservations_liste.png)
+![Vue des réservations](../images/reservations_liste.png)
 
 On voit la position dans la file d’attente, et le statut change automatiquement quand le livre redevient disponible.
 
@@ -432,9 +429,9 @@ On voit la position dans la file d’attente, et le statut change automatiquemen
 
 Le module gère les pénalités de retard et les frais d’adhésion de façon claire.
 
-![Liste des pénalités](images/penalites_liste.png)
+![Liste des pénalités](../images/penalites_liste.png)
 
-![Assistant de paiement](images/paiement_wizard.png)
+![Assistant de paiement](../images/paiement_wizard.png)
 
 L’assistant de paiement permet d’enregistrer un paiement partiel ou total, en choisissant le moyen de paiement.
 
@@ -442,9 +439,9 @@ L’assistant de paiement permet d’enregistrer un paiement partiel ou total, e
 
 Un journal garde la trace de toutes les notifications envoyées.
 
-![Journal des notifications](images/notifications_log.png)
+![Journal des notifications](../images/notifications_log.png)
 
-![Paramètres des notifications](images/notifications_settings.png)
+![Paramètres des notifications](../images/notifications_settings.png)
 
 On peut configurer les délais, fréquences et méthodes d’envoi (email, Odoo, ou les deux).
 
@@ -452,7 +449,7 @@ On peut configurer les délais, fréquences et méthodes d’envoi (email, Odoo,
 
 Un assistant facilite l’import en masse de livres.
 
-![Assistant d'import CSV](images/import_csv_wizard.png)
+![Assistant d'import CSV](../images/import_csv_wizard.png)
 
 L’import crée automatiquement les auteurs et catégories manquants, et génère un rapport détaillé.
 
