@@ -1,1019 +1,579 @@
-# 📚 Module Gestion de Bibliothèque - Odoo 17
-
-## � Table des Matières
-
-1. [Description](#-description)
-2. [Démarrage Rapide](#-démarrage-rapide)
-3. [Fonctionnalités Principales](#-fonctionnalités-principales)
-4. [Structure du Module](#-structure-du-module)
-5. [Installation](#-installation)
-6. [Utilisation](#-utilisation)
-7. [Fonctionnalités Techniques](#-fonctionnalités-techniques)
-8. [Contexte Académique](#-contexte-académique)
-9. [Support et Dépannage](#-support)
+# Rapport de Projet : Module de Gestion de Bibliothèque sous Odoo 17
 
 ---
 
-## 📋 Description
+## 1. Introduction
 
-**Module professionnel de gestion de bibliothèque** pour Odoo 17, développé dans le cadre d'un projet universitaire. 
+Le présent rapport s’inscrit dans le cadre du module __Gestion des Processus Métier et ERP__ et vise à présenter le travail de conception et de développement d’un module métier sous la plateforme **Odoo 17**. Ce projet a pour objectif de consolider la compréhension pratique des systèmes ERP et de mettre en évidence leur rôle central dans la digitalisation et l’optimisation des processus organisationnels.
 
-Ce module complet permet de gérer efficacement tous les aspects d'une bibliothèque moderne :
-- 📚 Catalogue de livres avec images et métadonnées
-- 👥 Gestion des adhérents avec suivi des adhésions
-- 📖 Emprunts avec workflow automatisé
-- 💰 Gestion financière (pénalités et cotisations)
-- 🔔 Système de notifications automatiques
-- 📊 Tableau de bord et rapports analytiques
-- 📥 Import/Export de données
+Le domaine métier retenu concerne la gestion des livres. Initialement orienté vers une approche commerciale classique (achat, vente et gestion de stock), le périmètre du projet a évolué afin de mieux correspondre à un contexte d’usage réel, en l’occurrence la gestion d’une bibliothèque. Ce choix permet de modéliser et d’implémenter des processus métiers variés et complémentaires, tels que la gestion des ouvrages, des adhérents, des emprunts et retours, ainsi que certains aspects financiers et de notification.
 
-**Version :** 17.0.1.0.0  
-**Licence :** LGPL-3  
-**Langue :** Français
+Le module développé, intitulé « Gestion de Bibliothèque », constitue une solution fonctionnelle et opérationnelle intégrée à Odoo. Il illustre de manière concrète l’application des concepts théoriques abordés au cours, tout en mettant en pratique les mécanismes fondamentaux de développement de modules ERP.
 
 ---
 
-## ⚡ Démarrage Rapide
+## 2. Contexte pédagogique et objectifs du module
+
+Ce projet s'inscrit dans le cadre d'un enseignement de cycle ingénieur visant à former les étudiants aux systèmes d'information d'entreprise et aux ERP. Les objectifs pédagogiques poursuivis sont les suivants :
+
+- Comprendre l'architecture modulaire d'un ERP et les principes de conception d'applications métier.
+- Maîtriser le framework Odoo : modèles de données (ORM), vues XML, workflows, et droits d'accès.
+- Modéliser des processus métier et les implémenter sous forme de modules fonctionnels.
+- Développer des compétences en programmation Python orientée objet appliquée aux ERP.
+- Appréhender les aspects d'intégration de données, de reporting et de notifications automatiques.
+
+Le projet permet ainsi de mettre en œuvre de manière concrète les connaissances théoriques relatives à la gestion des processus, à la modélisation relationnelle, et à l'utilisation d'outils professionnels tels qu'Odoo et Docker.
+
+---
+
+## 3. Présentation du domaine métier : gestion des livres
+
+Le domaine choisi porte sur la gestion des livres, un secteur qui peut être abordé selon deux axes principaux :
+
+1. **Axe commercial** : processus d'achat, de vente et de gestion de stock, typique d'une librairie ou d'un distributeur.
+2. **Axe documentaire** : gestion d'une bibliothèque avec prêt, retour, gestion des adhérents et pénalités de retard.
+
+Le projet a finalement adopté le second axe, jugé plus riche sur le plan métier et plus adapté à un contexte académique. Une bibliothèque implique en effet des processus variés :
+
+- Catalogage des ouvrages avec métadonnées complètes (ISBN, auteur, catégorie, éditeur).
+- Gestion des adhérents avec suivi des adhésions et des états (actif, expiré, suspendu).
+- Workflow d'emprunt et de retour avec calcul automatique des dates et détection des retards.
+- Gestion financière simplifiée (pénalités de retard, frais d'adhésion).
+- Système de notifications automatiques par email ou via l'interface Odoo.
+- Fonctionnalités de reporting et tableaux de bord analytiques.
+
+Ce périmètre permet de couvrir des concepts clés des ERP : gestion de workflows, intégration de modules, automatisation, et suivi analytique.
+
+---
+
+## 4. Analyse des processus métier
+
+Le module implémenté couvre plusieurs processus métier structurés autour de trois axes principaux.
+
+### 4.1. Processus de gestion des emprunts et retours
+
+Le processus central du module concerne le prêt et le retour d'ouvrages. Il se décompose en plusieurs étapes :
+
+**Workflow d'emprunt**
+1. Vérification de la disponibilité de l'ouvrage.
+2. Vérification du statut de l'adhérent (actif, non suspendu, pas de retards en cours).
+3. Création d'un enregistrement d'emprunt avec numérotation automatique (EMP00001, EMP00002, etc.).
+4. Calcul automatique de la date de retour prévue (14 jours par défaut).
+5. Changement automatique de l'état de l'ouvrage en "Emprunté".
+
+**Workflow de retour**
+1. Enregistrement de la date de retour effective.
+2. Mise à jour de l'état de l'ouvrage en "Disponible".
+3. Calcul des jours de retard éventuels.
+4. Génération automatique d'une pénalité si retard constaté.
+
+**Gestion des retards**
+- Un cron job quotidien détecte automatiquement les emprunts en retard.
+- Le statut de l'emprunt passe à "En retard".
+- Des notifications de rappel sont envoyées selon une fréquence configurable.
+
+### 4.2. Processus de gestion des adhérents
+
+La gestion des adhérents constitue le deuxième processus clé.
+
+**Inscription**
+- Création d'une fiche adhérent avec attribution d'un numéro unique (ADH00001, ADH00002, etc.).
+- Enregistrement des informations personnelles (nom, email, téléphone, adresse, photo).
+- Sélection du type d'adhérent (Étudiant, Enseignant, Personnel, Externe).
+- Calcul automatique de la date d'expiration de l'adhésion (1 an).
+
+**Suivi du statut**
+- Actif : adhésion valide et aucune suspension.
+- Expiré : adhésion dépassée.
+- Suspendu : compte bloqué (retards répétés, pénalités impayées, etc.).
+
+**Renouvellement**
+- Enregistrement d'un nouveau frais d'adhésion.
+- Mise à jour automatique de la date d'expiration.
+- Passage du statut à "Actif".
+
+### 4.3. Processus de gestion financière
+
+Le module intègre une gestion financière simplifiée mais fonctionnelle.
+
+**Pénalités de retard**
+- Calcul automatique : nombre de jours de retard × tarif journalier.
+- Workflow : Brouillon → Confirmée → Payée.
+- Possibilité de paiements partiels avec suivi du montant restant.
+- Assistant de paiement (wizard) avec sélection du moyen de paiement (Espèces, Carte, Chèque, Virement).
+
+**Frais d'adhésion**
+- Tarification différenciée selon le type d'adhérent.
+- Enregistrement du paiement avec méthode et date.
+- Mise à jour automatique de la validité de l'adhésion.
+
+### 4.4. Processus de notification automatique
+
+Un système de notifications automatiques assure le suivi proactif des échéances.
+
+**Types de notifications**
+- Rappel d'échéance proche : envoyé X jours avant la date de retour prévue.
+- Alerte de retard : envoyée périodiquement pour les emprunts en retard.
+- Expiration d'adhésion : notification préventive avant l'expiration.
+
+**Mécanisme technique**
+- Configuration centralisée des paramètres (délais, fréquence, méthodes).
+- Trois cron jobs quotidiens pour vérifier les échéances, retards et expirations.
+- Journal complet des notifications avec suivi des succès et échecs.
+
+---
+
+## 5. Présentation de la solution ERP Odoo
+
+### 5.1. Justification du choix d'Odoo
+
+Odoo est un ERP open source modulaire, largement utilisé en entreprise et particulièrement adapté à un contexte pédagogique pour les raisons suivantes :
+
+- **Architecture modulaire** : chaque module est autonome tout en s'intégrant avec les autres.
+- **Framework complet** : ORM robuste, moteur de vues XML, gestion des workflows et des droits.
+- **Communauté active** : documentation riche, forums, modules contributifs.
+- **Déploiement simplifié** : compatibilité Docker, facilitant l'installation et la portabilité.
+- **Gratuité** : version Community accessible sans contrainte de licence.
+
+### 5.2. Avantages pour le projet
+
+Dans le cadre de ce projet, Odoo offre plusieurs bénéfices concrets :
+
+- Gain de temps sur l'infrastructure technique (base de données, interface web, authentification).
+- Héritage de fonctionnalités standards (messagerie, activités, logs de modifications).
+- Capacité à développer des modules métier complexes avec un code relativement concis.
+- Expérience réelle d'un outil professionnel utilisé en entreprise.
+
+---
+
+## 6. Conception et développement du module Odoo
+
+### 6.1. Modélisation des données
+
+Le module repose sur onze modèles de données interconnectés, respectant les bonnes pratiques de modélisation relationnelle.
+
+**Modèles principaux**
+
+| Modèle | Description | Relations clés |
+|--------|-------------|----------------|
+| `library.book` | Ouvrage (ISBN, titre, auteur, catégorie, état) | Many2one vers Author et Category |
+| `library.author` | Auteur (nom, biographie, photo, nationalité) | One2many vers Book |
+| `library.category` | Catégorie (hiérarchique, avec parent/enfants) | One2many vers Book |
+| `library.member` | Adhérent (numéro, type, email, dates, statut) | One2many vers Borrowing, Penalty, MembershipFee |
+| `library.borrowing` | Emprunt (livre, adhérent, dates, état) | Many2one vers Book et Member |
+| `library.penalty` | Pénalité (montant, paiements, état) | Many2one vers Borrowing et Member |
+| `library.membership.fee` | Frais d'adhésion (montant, dates, méthode) | Many2one vers Member |
+| `library.reservation` | Réservation (livre, adhérent, file d'attente) | Many2one vers Book et Member |
+| `library.notification.settings` | Paramètres des notifications (singleton) | - |
+| `library.notification.log` | Journal des notifications | Many2one vers Member et Borrowing |
+| `library.dashboard` | Tableau de bord (champs calculés) | - |
+
+**Contraintes d'intégrité**
+- ISBN unique pour chaque livre.
+- Nom de catégorie unique.
+- Numérotation séquentielle automatique pour emprunts, adhérents, pénalités, etc.
+
+**Champs calculés**
+- Nombre de livres par auteur et par catégorie.
+- Jours d'emprunt, jours de retard, montant restant d'une pénalité.
+- Statut d'adhérent (actif/expiré/suspendu) calculé dynamiquement.
+- Statistiques du tableau de bord calculées en temps réel.
+
+### 6.2. Fonctionnalités développées
+
+Le module couvre un large éventail de fonctionnalités opérationnelles.
+
+**Gestion du catalogue**
+- CRUD complet sur les livres, auteurs et catégories.
+- Affichage d'images de couverture avec vue Kanban optimisée.
+- États des livres avec codes couleurs (Disponible, Emprunté, Réservé, En maintenance, Perdu).
+- Historique des emprunts par livre.
+- Import CSV en masse avec assistant dédié (trois modes : créer, mettre à jour, mixte).
+
+**Gestion des adhérents**
+- Fiches complètes avec photo, type, coordonnées.
+- Génération automatique de numéros de carte (ADH00001, etc.).
+- Calcul dynamique du statut (actif, expiré, suspendu).
+- Smart buttons pour accès rapide aux emprunts et pénalités.
+- Actions : renouveler, suspendre, activer.
+
+**Gestion des emprunts**
+- Workflow : Brouillon → Emprunté → Retourné / En retard.
+- Calcul automatique de la date de retour (14 jours).
+- Détection automatique des retards par cron job.
+- Boutons d'action : confirmer, retourner, marquer perdu, annuler.
+
+**Système de réservations**
+- Réservation de livres empruntés avec file d'attente.
+- Limite de trois réservations par adhérent.
+- États : En attente, Disponible, Récupéré, Expiré, Annulé.
+- Notification automatique lors de la disponibilité du livre.
+- Expiration automatique si non récupéré dans les 3 jours.
+
+**Gestion financière**
+- Pénalités calculées automatiquement (jours de retard × tarif).
+- Workflow : Brouillon → Confirmée → Payée.
+- Assistant de paiement avec paiements partiels.
+- Frais d'adhésion différenciés par type (Étudiant : 10€, Enseignant : 20€, etc.).
+- Historique complet des transactions.
+
+**Notifications automatiques**
+- Rappels d'échéance, alertes de retard, expiration d'adhésion.
+- Configuration centralisée (méthodes, délais, fréquences).
+- Templates d'emails professionnels.
+- Journal exhaustif avec suivi des échecs.
+- Trois cron jobs pour vérifications quotidiennes.
+
+**Reporting et tableaux de bord**
+- Tableau de bord avec KPIs en temps réel (livres, emprunts, adhérents).
+- Graphiques en barres (emprunts par mois).
+- Graphiques en camembert (livres par catégorie, par état).
+- Tableaux croisés dynamiques (Pivot).
+- Boutons d'accès rapide aux vues filtrées.
+
+### 6.3. Workflow métier implémenté
+
+Le workflow général du module peut être synthétisé ainsi :
+
+```
+1. Catalogage des livres (manuel ou import CSV)
+2. Inscription des adhérents
+3. Paiement des frais d'adhésion
+4. Création d'un emprunt (si livre disponible et adhérent actif)
+5. Confirmation de l'emprunt (changement d'état du livre)
+6. Notifications automatiques de rappel
+7. Retour du livre (mise à jour des états)
+8. Génération automatique de pénalité si retard
+9. Paiement de la pénalité
+10. Renouvellement de l'adhésion si expiré
+```
+
+Ce workflow illustre la cohérence fonctionnelle du module et l'enchaînement logique des processus métier.
+
+### 6.4. Installation et démarrage du module
+
+#### 6.4.1. Prérequis techniques
+
+L'installation du module nécessite les éléments suivants :
+
+- Docker et Docker Compose installés et fonctionnels
+- Ports 8069 (Odoo) et 5432 (PostgreSQL) disponibles sur la machine hôte
+- Système d'exploitation compatible (Windows, Linux, macOS)
+
+#### 6.4.2. Structure du projet
+
+Le projet doit être organisé selon la structure suivante :
+
+```
+edu_gourou/
+├── docker-compose.yml
+└── library_management/          # Module Odoo
+    ├── __init__.py
+    ├── __manifest__.py
+    ├── models/
+    ├── views/
+    ├── wizards/
+    ├── security/
+    ├── data/
+    └── static/
+```
+
+#### 6.4.3. Procédure de démarrage
+
+**Étape 1 : Cloner ou placer le projet**
 
 ```bash
-# 1. Cloner/télécharger le projet
 cd C:\Users\X1\Documents\edu_gourou
+```
 
-# 2. Démarrer Docker
+**Étape 2 : Démarrer les conteneurs Docker**
+
+```bash
 docker-compose up -d
-
-# 3. Accéder à Odoo
-# Navigateur → http://localhost:8069
-
-# 4. Installer le module
-# Apps → Rechercher "Gestion de Bibliothèque" → Installer
 ```
 
----
+Cette commande lance deux conteneurs :
+- Un conteneur Odoo (version 17.0) exposé sur le port 8069
+- Un conteneur PostgreSQL (version 15) pour la base de données
 
-## ✨ Fonctionnalités Principales
-
-### 📊 Tableau de Bord et Rapports (Catégorie 5)
-- **Statistiques en temps réel** :
-  - Total des livres, disponibles, empruntés, perdus
-  - Total des emprunts, actifs, en retard, retournés
-  - Statistiques des adhérents (actifs, expirés, suspendus)
-- **Boutons d'accès rapide** avec icônes vers les fonctionnalités principales
-- **Vues analytiques** :
-  - Graphiques en barres (emprunts par mois)
-  - Graphiques en camembert (livres par catégorie/état)
-  - Tableaux croisés dynamiques (Pivot)
-- **Design moderne** avec interface intuitive
-
-### 📚 Gestion des Livres
-- Enregistrement complet des livres (ISBN, titre, auteur, catégorie, éditeur)
-- **Image de couverture** avec affichage optimisé
-- **États des livres avec codes couleurs** :
-  - 🟢 Disponible (vert)
-  - 🟡 Emprunté (jaune)
-  - 🔵 Réservé (bleu)
-  - ⚫ En maintenance (gris)
-  - 🔴 Perdu (rouge)
-- Historique des emprunts par livre
-- Suivi du nombre de pages et date de publication
-- **Vue Kanban améliorée** avec grandes images et bordures colorées
-- Compteur d'emprunts par livre
-- Boutons d'actions : Marquer disponible, En maintenance, Perdu
-
-### ✍️ Gestion des Auteurs
-- Fiche complète des auteurs avec photo
-- Biographie, nationalité, date de naissance
-- Liste des livres par auteur
-- Compteur de livres par auteur
-
-### 👥 Gestion des Membres/Adhérents (Catégorie 1)
-- **Fiches complètes des adhérents** :
-  - Numéro de carte unique (ADH00001, ADH00002...)
-  - Types : Étudiant, Enseignant, Personnel, Externe
-  - Dates d'inscription et d'expiration
-  - Photo et coordonnées complètes
-- **États automatiques** :
-  - 🟢 Actif : Adhésion valide
-  - 🟡 Expiré : Adhésion périmée
-  - 🔴 Suspendu : Compte bloqué
-- **Statistiques en temps réel** :
-  - Total emprunts, emprunts en cours, en retard
-  - Total pénalités, pénalités payées, impayées
-- **Smart buttons** : Accès rapide aux emprunts et pénalités
-- **Actions** : Renouveler, Suspendre, Activer
-- **Vue Kanban** avec photos et statistiques
-
-### 💰 Gestion Financière Simple (Catégorie 3)
-
-#### Pénalités de Retard
-- **Calcul automatique** : Jours de retard × Tarif par jour
-- **Workflow complet** : Brouillon → Confirmée → Payée
-- **Paiements partiels** : Enregistrer des paiements progressifs
-- **Assistant de paiement** : Wizard avec moyens de paiement
-- **Suivi** : Montant total, payé, restant
-- **Lien avec emprunts** : Création automatique pour les retards
-
-#### Frais d'Adhésion
-- **Tarifs par type** :
-  - Étudiant : 10€
-  - Enseignant : 20€
-  - Personnel : 15€
-  - Externe : 30€
-- **Validité d'1 an** calculée automatiquement
-- **Renouvellement** : Met à jour l'expiration de l'adhérent
-- **Moyens de paiement** : Espèces, Carte, Chèque, Virement
-- **Historique complet** sur la fiche adhérent
-
-### 🔔 Notifications et Alertes (Catégorie 6)
-
-#### Notifications Automatiques
-- **Rappel échéance proche** : X jours avant la date de retour (configurable)
-- **Alerte retard** : Rappels périodiques pour emprunts en retard
-- **Adhésion expire** : Notification avant expiration de l'adhésion
-- **Livre disponible** : Alerte quand un livre redevient disponible
-
-#### Système Configurable
-- **Méthodes** : Email, Notification Odoo, ou les deux
-- **Paramètres personnalisables** :
-  - Nombre de jours avant échéance pour rappel (défaut: 2)
-  - Fréquence des rappels de retard (défaut: tous les 3 jours)
-  - Nombre de jours avant expiration adhésion (défaut: 7)
-- **Activation/désactivation** par type de notification
-- **Templates d'emails** professionnels avec design moderne
-
-#### Journal des Notifications
-- **Historique complet** de toutes les notifications envoyées
-- **Suivi des échecs** avec messages d'erreur détaillés
-- **Filtres intelligents** : Par type, état, destinataire
-- **Vue dédiée** pour les notifications échouées
-- **Statistiques** : Taux de succès, échecs par type
-
-#### Cron Jobs Automatiques
-- ⏰ **Vérification quotidienne** des échéances proches
-- ⏰ **Vérification quotidienne** des retards
-- ⏰ **Vérification quotidienne** des adhésions expirant
-
-### 📥 Import/Export et Intégration (Catégorie 11)
-
-#### Import de Catalogue CSV
-- **Assistant d'import** avec interface intuitive
-- **3 modes d'import** :
-  - Créer de nouveaux livres uniquement
-  - Mettre à jour les livres existants (par ISBN)
-  - Créer et mettre à jour (mode mixte)
-- **Téléchargement de template** CSV avec exemples
-- **Création automatique** :
-  - Auteurs manquants créés automatiquement
-  - Catégories manquantes créées automatiquement
-- **Format CSV simple** :
-  ```csv
-  isbn,title,author,category,publisher,pages
-  9782070360024,L'Étranger,Albert Camus,Fiction,Gallimard,186
-  ```
-- **Rapport d'import détaillé** :
-  - Nombre de livres créés
-  - Nombre de livres mis à jour
-  - Liste des erreurs éventuelles
-
-### � Système de Réservations (Catégorie 4)
-
-#### Réserver des Livres
-- **Réservation de livres empruntés** : Mettre un livre en attente
-- **File d'attente automatique** : Gestion des priorités (premier arrivé, premier servi)
-- **Limite de réservations** : Maximum 3 réservations par adhérent
-- **Numérotation** : RES00001, RES00002...
-
-#### États des Réservations
-- 🟡 **En attente** : Livre pas encore disponible
-- 🟢 **Disponible** : Livre prêt à être récupéré
-- ✅ **Récupéré** : Emprunt créé automatiquement
-- ⏰ **Expiré** : Délai de récupération dépassé (3 jours)
-- ❌ **Annulé** : Réservation annulée
-
-#### Notifications Automatiques
-- **Email de confirmation** : Dès la création de la réservation
-- **Notification de disponibilité** : Quand le livre est retourné
-- **Délai de récupération** : 3 jours pour venir chercher le livre
-- **Expiration automatique** : Si non récupéré dans les délais
-
-#### Gestion Intelligente
-- **Position dans la file** : Affichage de la priorité
-- **Passage automatique** : Au suivant si expiration ou annulation
-- **Smart buttons** : Sur livres et adhérents
-- **Onglet dédié** : Historique des réservations par adhérent
-
-#### Cron Jobs
-- ⏰ **Vérification quotidienne** des réservations expirées
-- ⏰ **Traitement horaire** de la file d'attente (livres retournés)
-
-### �📖 Gestion des Emprunts
-- **Workflow complet** : Brouillon → Emprunté → Retourné/En retard
-- **Numérotation automatique** : EMP00001, EMP00002...
-- **Calcul automatique** de la date de retour (14 jours)
-- **Détection des retards** : Changement d'état automatique
-- **Lien avec adhérents** : Auto-remplissage des informations
-- **Historique** : Traçabilité complète de chaque emprunt
-- **Cron job quotidien** pour détecter les emprunts en retard
-- **Suivi des rappels** : Date et nombre de rappels envoyés
-- **Boutons d'actions** : Confirmer, Retourner, Marquer perdu, Annuler
-
-### 🗂️ Gestion des Catégories
-- **Structure hiérarchique** : Catégories et sous-catégories
-- **Arbre de navigation** : Vue parent/enfant
-- **Compteur de livres** par catégorie
-- **Descriptions** : Texte explicatif pour chaque catégorie
-- **Catégories de démonstration** : 7 catégories pré-configurées
-
-## 📁 Structure du Module
-
-```
-library_management/
-├── __init__.py                          # Initialisation du module
-├── __manifest__.py                      # Déclaration du module
-├── README.md                            # Documentation complète
-├── models/                              # Modèles de données (11 modèles)
-│   ├── __init__.py
-│   ├── library_book.py                  # Modèle Livre
-│   ├── library_author.py                # Modèle Auteur
-│   ├── library_category.py              # Modèle Catégorie
-│   ├── library_member.py                # Modèle Adhérent
-│   ├── library_borrowing.py             # Modèle Emprunt
-│   ├── library_penalty.py               # Modèle Pénalité (NOUVEAU)
-│   ├── library_membership_fee.py        # Modèle Frais adhésion (NOUVEAU)
-│   ├── library_notification.py          # Modèle Notification (NOUVEAU)
-│   └── library_dashboard.py             # Modèle Tableau de bord
-├── wizards/                             # Assistants (NOUVEAU)
-│   ├── __init__.py
-│   ├── library_penalty_payment_wizard.py      # Assistant paiement pénalité
-│   └── library_book_import_wizard.py          # Assistant import CSV
-├── views/                               # Vues XML
-│   ├── library_dashboard_views.xml      # Tableau de bord + Rapports
-│   ├── library_book_views.xml           # Vues Livre (améliorées)
-│   ├── library_author_views.xml         # Vues Auteur (améliorées)
-│   ├── library_category_views.xml       # Vues Catégorie (améliorées)
-│   ├── library_member_views.xml         # Vues Adhérent (NOUVEAU)
-│   ├── library_borrowing_views.xml      # Vues Emprunt (améliorées)
-│   ├── library_penalty_views.xml        # Vues Pénalité (NOUVEAU)
-│   ├── library_membership_fee_views.xml # Vues Frais adhésion (NOUVEAU)
-│   ├── library_notification_views.xml   # Vues Notification (NOUVEAU)
-│   ├── library_wizards_views.xml        # Vues Assistants (NOUVEAU)
-│   └── library_menus.xml                # Menus complets
-├── security/                            # Droits d'accès
-│   └── ir.model.access.csv              # Permissions pour tous les modèles
-├── data/                                # Données et configuration
-│   ├── library_data.xml                 # Données de démo + Séquences
-│   └── library_notification_data.xml    # Templates email + Cron jobs (NOUVEAU)
-├── static/                              # Ressources statiques
-│   ├── description/
-│   │   └── icon.png                     # Icône du module
-│   └── src/
-│       └── css/
-│           └── library_style.css        # Styles personnalisés
-└── docker-compose.yml                   # Configuration Docker (racine projet)
-- **Activation/désactivation** par type de notification
-- **Templates d'emails** professionnels avec design moderne
-
-#### Journal des Notifications
-- **Historique complet** de toutes les notifications envoyées
-- **Suivi des échecs** avec messages d'erreur détaillés
-- **Filtres intelligents** : Par type, état, destinataire
-- **Vue dédiée** pour les notifications échouées
-- **Statistiques** : Taux de succès, échecs par type
-
-#### Cron Jobs Automatiques
-- ⏰ **Vérification quotidienne** des échéances proches
-- ⏰ **Vérification quotidienne** des retards
-- ⏰ **Vérification quotidienne** des adhésions expirant
-
-### 📥 Import/Export et Intégration (Catégorie 11)
-
-#### Import de Catalogue CSV
-- **Assistant d'import** avec interface intuitive
-- **3 modes d'import** :
-  - Créer de nouveaux livres uniquement
-  - Mettre à jour les livres existants (par ISBN)
-  - Créer et mettre à jour (mode mixte)
-- **Téléchargement de template** CSV avec exemples
-- **Création automatique** :
-  - Auteurs manquants créés automatiquement
-  - Catégories manquantes créées automatiquement
-- **Format CSV simple** :
-  ```csv
-  isbn,title,author,category,publisher,pages
-  9782070360024,L'Étranger,Albert Camus,Fiction,Gallimard,186
-  ```
-- **Rapport d'import détaillé** :
-  - Nombre de livres créés
-  - Nombre de livres mis à jour
-  - Liste des erreurs éventuelles
-
-### 🎨 Améliorations Visuelles
-
-### Design Moderne
-- **CSS personnalisé** avec gradients et animations
-- **Cartes Kanban stylées** avec :
-  - Bordures colorées à gauche selon l'état
-  - Grandes images de couverture (120x160px)
-  - Effets de survol (hover)
-  - Ombres et transitions fluides
-- **Badges colorés** pour tous les états
-- **Icônes Font Awesome** partout
-- **Emojis** dans les menus et colonnes
-
-### Interface Utilisateur
-- **Tableau de bord central** avec statistiques visuelles
-- **Vues multiples** : Formulaire, Liste, Kanban, Recherche
-- **Filtres intelligents** et regroupements
-- **Boutons d'action** contextuels avec icônes
-- **Chatter** pour suivi des modifications (mail.thread)
-- **Activités** planifiables (mail.activity.mixin)
-
-## 📁 Structure du Module
-
-```
-library_management/
-├── __init__.py                          # Initialisation du module
-├── __manifest__.py                      # Déclaration du module
-├── README.md                            # Documentation complète
-├── models/                              # Modèles de données
-│   ├── __init__.py
-│   ├── library_book.py                  # Modèle Livre
-│   ├── library_author.py                # Modèle Auteur
-│   ├── library_category.py              # Modèle Catégorie
-│   ├── library_borrowing.py             # Modèle Emprunt
-│   └── library_dashboard.py             # Modèle Tableau de bord (NOUVEAU)
-├── views/                               # Vues XML
-│   ├── library_dashboard_views.xml      # Tableau de bord (NOUVEAU)
-│   ├── library_book_views.xml           # Vues Livre (améliorées)
-│   ├── library_author_views.xml         # Vues Auteur (améliorées)
-│   ├── library_category_views.xml       # Vues Catégorie (améliorées)
-│   ├── library_borrowing_views.xml      # Vues Emprunt (améliorées)
-│   └── library_menus.xml                # Menus (avec tableau de bord)
-├── security/                            # Droits d'accès
-│   └── ir.model.access.csv              # Permissions par modèle
-├── data/                                # Données de démonstration
-│   └── library_data.xml                 # Catégories, auteurs, livres, séquence
-├── static/                              # Ressources statiques
-│   ├── description/
-│   │   └── icon.png                     # Icône du module
-│   └── src/
-│       └── css/
-│           └── library_style.css        # Styles personnalisés (NOUVEAU)
-└── odoo.conf                            # Configuration Odoo (racine projet)n quotidienne** pour détecter les emprunts en retard
-- Boutons d'actions : Confirmer, Retourner, Marquer perdu, Annuler
-
-## Structure du Module## ⚡ Démarrage Rapide
+**Étape 3 : Vérifier le démarrage des services**
 
 ```bash
-# 1. Cloner/télécharger le projet
-cd C:\Users\X1\Documents\edu_gourou
-
-# 2. Démarrer Docker
-docker-compose up -d
-
-# 3. Accéder à Odoo
-# Navigateur → http://localhost:8069
-
-# 4. Installer le module
-# Apps → Rechercher "Gestion de Bibliothèque" → Installer
+docker-compose ps
 ```
 
----
-🚀 Installation
+Les deux services doivent être à l'état "Up".
 
-### Prérequis
-- Docker et Docker Compose installés
-- Ports 8069 (Odoo) et 5432 (PostgreSQL) disponibles
+**Étape 4 : Accéder à l'interface Odoo**
 
-### Via Docker (Recommandé)
+Ouvrir un navigateur et accéder à : `http://localhost:8069`
 
-1. **Clonez ou placez le projet** :
-   ```bash
-   cd C:\Users\X1\Documents\edu_gourou
-   ```
+Lors de la première connexion, Odoo demande la création d'une base de données.
 
-2. **Structure requise** :
-   ```
-   edu_gourou/
-   ├── docker-compose.yml
-   ├── library_management/          # Module Odoo
-   └KPIs clés** :
-  - Livres : Total, Disponibles, Empruntés, Taux d'occupation
-  - Emprunts : Total, Actifs, En retard, Taux de retard
-  - Adhérents : Total, Actifs, Expirés, Suspendus
-- **Accès rapides** :
-  - 📗 Voir Livres Disponibles
-  - 📋 Emprunts en Cours
-  - ⚠️ Emprunts en Retard
-  - 👥 Adhérents Actifs
-- **Vues analytiques** :
-  - 📊 Graphique emprunts par mois
-  - 🥧 Graphique livres par catégorie
-  - 📈 Tableau croisé dynamique
+**Étape 5 : Activer le mode développeur**
 
-#### 📚 Livres
-- **Tous les livres** : Vue complète (Kanban/Liste/Formulaire)
-- **Livres disponibles** : Livres prêts à être empruntés (vue filtrée)
-- **Livres empruntés** : Livres actuellement en prêt (vue filtrée)
+Une fois connecté à Odoo :
+1. Aller dans Paramètres → Général
+2. Activer le mode développeur
 
-**Actions disponibles** :
-- Créer un nouveau livre
-- 📥 **Importer des livres** (CSV)
-- Modifier les informations
-- Changer l'état (disponible, maintenance, perdu)
-- Voir l'historique des emprunts
-- Archiver/Désarchiver
+**Étape 6 : Installer le module**
 
-#### 👥 Adhérents
-- **Tous les adhérents** : Liste complète avec photos
-- **Adhérents actifs** : Adhésions valides uniquement
-- **Adhérents expirés** : À renouveler
+1. Aller dans le menu Applications
+2. Cliquer sur "Mettre à jour la liste des applications"
+3. Rechercher "Gestion de Bibliothèque"
+4. Cliquer sur "Installer"
 
-**Fonctionnalités** :
-- Fiche complète avec statistiques
-- SmaInscrire un nouvel adhérent
-1. Bibliothèque → Adhérents → Tous les adhérents
-2. Cliquer sur "Créer"
-3. Remplir : Nom, Type, Email, Téléphone
-4. Ajouter une photo
-5. Sauvegarder → Numéro de carte généré automatiquement (ADH00001)
+L'installation prend quelques secondes et crée automatiquement :
+- Les tables de base de données pour tous les modèles
+- Les vues et menus
+- Les données de démonstration (catégories, auteurs, livres)
+- Les cron jobs de notification
+- Les séquences de numérotation
 
-#### Ajouter un nouveau livre
-1. Bibliothèque → Livres → Tous les livres
-2. Cliquer sur "Créer"
-3. Remplir : Titre, ISBN, Auteur, Catégorie, etc.
-4. Ajouter une image de couverture
-5. Sauvegarder
+### 6.4.4. Commandes Docker utiles
 
-#### Importer des livres en masse
-1. Bibliothèque → Import/Export → Importer des livres
-2. Télécharger le template CSV
-3. Remplir le fichier avec vos livres
-4. Uploader le fichier
-5. Sélectionner le mode (Créer/Mettre à jour)
-6. Lancer l'import → Rapport détaillé affiché
-
-#### Créer un emprunt
-1. Bibliothèque → Emprunts → Tous les emprunts
-2. Cliquer sur "Créer"
-3. Sélectionner le livre (doit être disponible)
-4. Sélectionner l'adhérent → Auto-remplissage des infos
-5. La date de retour est calculée automatiquement (14 jours)
-6. Cliquer sur "Confirmer l'emprunt"
-
-#### Retourner un livre
-1. Bibliothèque → Emprunts → Emprunts en cours
-2. Ouvrir l'emprunt concerné
-3. Cliquer sur "Retourner le livre"
-4. Le livre redevient automatiquement disponible
-5. Si en retard → Pénalité créée automatiquement
-
-#### Gérer une pénalité
-1. Bibliothèque → Finances → Pénalités impayées
-2. Ouvrir la pénalité
-3. Cliquer sur "Confirmer" (si brouillon)
-4. Cliquer sur "Enregistrer un paiement"
-5. Saisir le montant et la méthode
-6. Confirmer → État change en "Payée" si complet
-
-#### Renouveler une adhésion
-1. Bibliothèque → Adhérents → Adhérents expirés
-2. Ouvrir la fiche adhérent
-3. Aller dans l'onglet "Frais d'adhésion"
-4. Créer un nouveau frais (montant calculé selon le type)
-5. Confirmer le paiement
-6. L'adhérent devient automatiquement "Actif" avec nouvelle date d'expiration
-
-#### Configurer les notifications
-1. Bibliothèque → Notifications → Paramètres
-2. Choisir la méthode (Email / Odoo / Les deux)
-3. Configurer les délais :
-   - Rappel amember (Adhérent)
-- **Champs** : name, member_number, member_type, email, phone, address, photo, registration_date, expiration_date, state
-- **Héritage** : mail.thread, mail.activity.mixin
-- **Relations** : One2many vers Borrowing, Penalty, MembershipFee
-- **Champs calculés** : state (actif/expiré/suspendu), total_borrowings, current_borrowings, late_borrowings, total_penalties, unpaid_penalties
-- **Séquence** : ADH00001, ADH00002...
-
-#### library.borrowing (Emprunt)
-- **Champs** : name, book_id, member_id, borrower_name, borrower_email, borrowing_date, expected_return_date, actual_return_date, state, last_reminder_date, reminder_count
-- **Héritage** : mail.thread, mail.activity.mixin
-- **Relations** : Many2one vers Book et Member
-- **Champs calculés** : days_borrowed, is_late, late_days
-- **Séquence** : EMP00001, EMP00002...
-- **Méthodes** : _send_notification(), _get_notification_message()
-
-#### library.penalty (Pénalité)
-- **Champs** : name, borrowing_id, member_id, late_days, daily_rate, penalty_amount, payment_amount, remaining_amount, state
-- **Héritage** : mail.thread, mail.activity.mixin
-- **Relations** : Many2one vers Borrowing et Member
-- **Champs calculés** : penalty_amount, remaining_amount
-- **Séquence** : PEN00001, PEN00002...
-
-#### library.membership.fee (Frais d'adhésion)
-- **Champs** : name, member_id, fee_amount, payment_date, validity_start, validity_end, state, payment_method
-- **Héritage** : mail.thread, mail.activity.mixin
-- **Relations** : Many2one vers Member
-- **Champs calculés** : validity_end (1 an après validity_start)
-- **Séquence** : FEE00001, FEE00002...
-
-#### library.notification.settings (Paramètres notifications)
-- **Champs** : name, enable_due_soon_notification, due_soon_days, enable_overdue_notification, overdue_frequency_days, enable_membership_expiring, membership_expiring_days, notification_method
-- **Singleton** : Un seul enregistrement actif
-
-#### library.notification.log (Journal notifications)
-- **Champs** : name, notification_type, recipient_id, recipient_email, borrowing_id, book_id, sent_date, status, method, error_message
-- **Séquence** : NOT00001, NOT00002...
-
-#### library.dashboard (Tableau de bord)
-- **Champs calculés** : Tous les champs (statistiques en temps réel)
-- **Pas de stockage** : Calculs à la volée
-- **Frais d'adhésion** : Historique des paiements
-
-**Actions financières** :
-- Confirmer une pénalité
-- Enregistrer un paiement (wizard)
-- Confirmer un paiement d'adhésion
-- Annuler une transaction
-
-#### 📊 Rapports
-- **Tableau de bord** : Vue d'ensemble
-- **Emprunts par mois** : Graphique temporel
-- **Analyse des livres** : Statistiques par catégorie
-
-#### 🔔 Notifications
-- **Paramètres** : Configuration du système
-- **Journal** : Historique des notifications
-- **Échecs** : Notifications en erreur
-
-**Configuration** :
-- Méthode : Email / Odoo / Les deux
-- Rappel échéance : X jours avant (défaut: 2)
-- Fréquence retard : Tous les X jours (défaut: 3)
-- Adhésion expire : X jours avant (défaut: 7)
-
-#### 📥 Import/Export
-- **Importer des livres** : Assistant CSV
-  - Télécharger le template
-  - Uploader le fichier
-  - Créer/Mettre à jour les livresble, maintenance, perdu)
-- Voir l'historique des emprunts
-- Archiver/Désarchiver
-
-#### 📖 Emprunts
-- **Tous les emprunts** : Historique complet
-- **Emprunts en cours** : Emprunts actifs
-- **Emprunts en retard** : Suivi des retards avec alertes
-
-**Workflow d'emprunt** :
-1. Créer un emprunt (état : Brouillon)
-2. Confirmer l'emprunt → Livre devient "Emprunté"
-3. Retourner le livre → Livre redevient "Disponible"
-4. Ou marquer comme perdu
-
-#### ⚙️ Configuration
-- **Auteurs** : Gestion complète des auteurs
-- **Catégories** : Organisation hiérarchique des catégories
-
-### 🎯 Cas d'usage typiques
-
-#### Ajouter un nouveau livre
-1. Bibliothèque → Livres → Tous les livres
-2. Cliquer sur "Créer"
-3. Remplir : Titre, ISBN, Auteur, Catégorie, etc.
-4. Ajouter une image de couverture
-5. Sauvegarder
-
-#### Créer un emprunt
-1. Bibliothèque → Emprunts → Tous les emprunts
-2. Cliquer sur "Créer"
-3. Sélectionner le livre (doit être disponible)
-4. Renseigner l'emprunteur
-5. La date de retour est calculée automatiquement (14 jours)
-6. Cliquer sur "Confirmer l'emprunt"
-
-#### Retourner un livre
-1. Bibliothèque → Emprunts → Emprunts en cours
-2. Ouvrir l'emprunt concerné
-3. Cliquer sur "Retourner le livre"
-4. Le livre redevient automatiquement disponible
-   - Cliquez sur "**Installer**"
-6 catégories implémentées** :
-   - ✅ Catégorie 1 : Gestion des Membres/Adhérents
-   - ✅ Catégorie 3 : Gestion Financière Simple
-   - ✅ Catégorie 5 : Rapports et Tableaux de Bord
-   - ✅ Catégorie 6 : Notifications et Alertes
-   - ✅ Catégorie 11 : Import/Export et Intégration
-   - ✅ Fonctionnalités de base complètes
-✅ **Système de notifications** automatique avec emails  
-✅ **Import/Export CSV** pour catalogue  
-✅ **Gestion financière** (pénalités + adhésions)  
-✅ **Tableau de bord analytique** avec graphiques  
-✅ **Données de démonstration** pour présentation  
-✅ **Documentation complète** (README détaillé)  
-
-### Fonctionnalités Implémentées
-
-#### ✅ Complètement Opérationnelles
-- 📚 Gestion des livres (CRUD, états, historique)
-- ✍️ Gestion des auteurs et catégories
-- 👥 Gestion complète des adhérents
-- 📖 Gestion des emprunts avec workflow
-- 💰 Pénalités de retard avec paiements
-- 💳 Frais d'adhésion avec renouvellement
-- 🔔 Notifications automatiques (email + Odoo)
-- 📥 Import CSV de catalogue
-- 📊 Tableau de bord avec KPIs
-- 📈 Rapports et analyses (graphiques, pivot)
-- ⏰ 3 Cron jobs pour automatisation
-
-### Évolutions Possibles (Non implémentées)
-- 📱 Application mobile
-- 🔒 Gestion avancée des droits par rôle
-- 📍 Localisation physique des livres (étagères, rayons)
-- 🔄 Système de réservations de livres
-- 📚 Gestion de plusieurs exemplaires par titre
-- 📤 Export vers systèmes externes (MARC, bibliothèques numériques)
-- 📊 Rapports avancés (utilisation par adhérent, popularité livres)
-- 💬 Système de notation et commentaires de livres
-- 🔍 Recherche avancée full-text
-- 📆 Calendrier des événements (clubs de lecture, etc.)y, biography
-- **Relations** : One2many vers Book
-- **Champs calculés** : book_count
-
-#### library.category (Catégorie)
-- **Champs** : name, description, parent_id
-- **Relations** : Many2one vers Category (hiérarchique), One2many vers Book
-- **Champs calculés** : book_count
-- **Contrainte** : Nom unique
-
-#### library.borrowing (Emprunt)
-- **Champs** : name, book_id, borrower_name, borrower_email, borrowing_date, expected_return_date, actual_return_date, state
-- **Héritage** : mail.thread, mail.activity.mixin
-- **Relations** : Many2one vers Book
-- **Champs calculés** : days_borrowed, is_late, late_days
-- **Séquence** : EMP00001, EMP00002...
-
-###🔗 Intégration Odoo Standard
-
-### Héritages Odoo
-- **mail.thread** : Chatter pour suivi des modifications et messages
-- **mail.activity.mixin** : Planification et suivi d'activités
-
-### Contraintes SQL
-- `isbn_uniq` : ISBN unique pour chaque livre
-- `name_uniq` : Nom de catégorie unique
-
-### Relations ORM
-- **Many2one** : book → author, book → category, borrowing → book
-- **One2many** : author → books, category → books, book → borrowings
-
-### Types de Champs
-- **Char** : Texte court (name, isbn, email, phone)
-- **Text** : Texte long (description, biography, notes)
-- **Date** : Dates (birth_date, borrowing_date, return_date)
-- *🎓 Contexte Académique
-
-### Objectifs Pédagogiques
-Ce module a été développé dans le cadre d'un **projet universitaire** pour démontrer :
-
-1. **Maîtrise du paramétrage Odoo 17** :
-   - Configuration de modules
-   - Création de modèles de données
-   - Conception de vues XML
-   - Relations entre objets
-
-2. **Compétences techniques** :
-   - Développement Python orienté objet
-   - Framework Odoo (ORM, API)
-   - Gestion de base de données relationnelle
-   - Interface utilisateur moderne
-
-3. **Concepts métier** :
-   - Gestion de bibliothèque
-   - Workflow d'emprunts
-   - États et transitions
-   - Statistiques et reporting
-
-### Points Forts du Module
-✅ **Structure professionnelle** respectant les standards Odoo  
-✅ **Code propre et documenté** en français  
-✅ **Interface moderne** avec design soigné  
-✅ **Fonctionnalités complètes** et opérationnelles  
-✅ **Données de démonstration** pour présentation  
-✅ **Documentation complète** (README)  
-
-### Évolutions Possibles
-- 📱 Application mobile
-- 📧 Notifications email automatiques
-- 💰 Gestion des pénalités de retard
-- 👥 Gestion des membres/adhérents
-- 📊 Rapports et analyses avancées
-- 🔒 Gestion des droits par rôle
-- 📍 Localisation physique des livres (étagères)
-- 🔄 Réservations de livres
-- 📚 Gestion de plusieurs exemplaires
-- 📈 Graphiques et tableaux de bord avancés
-
-## 👨‍💻 Auteur
-
-Développé par **Équipe Projet Universitaire**  
-Dans le cadre d'un TP/Projet de gestion avec Odoo 17
-
-## 📄 Licence
-
-**LGPL-3** - Licence Publique Générale GNU (version 3)
-
-Ce module est un logiciel libre. Vous pouvez le redistribuer et/ou le modifier selon les termes de la licence LGPL-3.
-
-## 🆘 Support
-
-### Pour les Questions
-- 📖 Consultez cette documentation complète
-- 🔍 Vérifiez les logs Odoo : `docker-compose logs -f web`
-- 🛠️ Mode debug Odoo : Paramètres → Activer le mode développeur
-- 📧 Vérifiez le journal des notifications pour problèmes d'emails
-
-### Problèmes Courants
-
-#### Le module n'apparaît pas
-```bash
-# 1. Redémarrer Docker
-docker-compose restart
-
-# 2. Dans Odoo : Apps → Mettre à jour la liste des applications
-```
-
-#### Erreur lors de l'installation
-1. Vérifiez les logs : `docker-compose logs web`
-2. Vérifiez les droits d'accès dans `security/ir.model.access.csv`
-3. Validez la syntaxe des fichiers XML
-4. Assurez-vous que les dépendances (`base`, `mail`) sont installées
-
-#### Les notifications ne fonctionnent pas
-1. Vérifier les paramètres : **Notifications → Paramètres**
-2. Vérifier la configuration email d'Odoo
-3. Consulter : **Notifications → Échecs** pour voir les erreurs
-4. Vérifier que les cron jobs sont actifs : **Paramètres → Tâches planifiées**
-
-#### Import CSV échoue
-1. Vérifier le format du fichier (UTF-8, virgules)
-2. Télécharger et utiliser le template fourni
-3. S'assurer que les colonnes sont correctes : `isbn,title,author,category,publisher,pages`
-4. Vérifier les messages d'erreur dans le rapport d'import
-
-#### Les pénalités ne se créent pas
-1. Vérifier que le cron job "Vérifier retards" est actif
-2. Forcer l'exécution : **Paramètres → Tâches planifiées → Bibliothèque: Vérifier retards → Exécuter**
-3. Vérifier dans les logs s'il y a des erreurs
-
-### Commandes Docker Utiles
+**Consulter les logs en temps réel**
 
 ```bash
-# Voir les logs en temps réel
 docker-compose logs -f web
+```
 
-# Redémarrer uniquement Odoo
+**Redémarrer uniquement le service Odoo**
+
+```bash
 docker-compose restart web
+```
 
-# Arrêter tous les services
+**Arrêter tous les services**
+
+```bash
 docker-compose down
+```
 
-# Arrêter et supprimer les volumes (⚠️ Perte de données)
+**Arrêter et supprimer les volumes (attention : perte de données)**
+
+```bash
 docker-compose down -v
+```
 
-# Reconstruire les conteneurs
+**Reconstruire les conteneurs après modification**
+
+```bash
 docker-compose up -d --build
 ```
 
-### Mode Développeur Odoo
+#### 6.4.5. Vérification de l'installation
 
-Activer le mode développeur pour accéder aux fonctionnalités avancées :
-1. **Paramètres → Activer le mode développeur**
-2. Ou ajouter `?debug=1` à l'URL : `http://localhost:8069/web?debug=1`
+Après installation, vérifier que :
+- Le menu "Bibliothèque" apparaît dans la barre de navigation principale
+- Le tableau de bord s'affiche avec les statistiques
+- Les données de démonstration sont présentes (3 livres, 3 auteurs, 7 catégories)
+- Les cron jobs sont actifs dans Paramètres → Technique → Tâches planifiées
 
-**Fonctionnalités debug utiles** :
-- Voir les noms techniques des champs
-- Éditer les vues directement
-- Voir les IDs des enregistrements
-- Consulter les métadonnées des modèles
+En cas de problème, consulter les logs Docker pour identifier l'origine de l'erreur.
 
 ---
 
-## 📝 Notes de Développement
+## 7. Résultats et illustration de l'application
 
-### Conventions de Code
-- **Langue** : Français pour les labels et la documentation
-- **Style Python** : PEP 8
-- **Nommage modèles** : `library_*` (ex: `library.book`)
-- **Nommage fichiers** : snake_case
-- **Séquences** : Préfixes en majuscules (EMP, ADH, PEN, FEE, NOT)
+Cette section présente les principales interfaces développées, illustrant les fonctionnalités opérationnelles du module.
 
-### Architecture
-- **MVC** : Séparation modèles/vues/contrôleurs
-- **ORM Odoo** : Utilisation des décorateurs `@api.depends`, `@api.onchange`
-- **Héritage** : `mail.thread` et `mail.activity.mixin` pour traçabilité
-- **Champs calculés** : `compute=`, `store=True` pour performance
-- **Contraintes SQL** : Pour intégrité des données
+### 7.1. Tableau de bord et reporting
 
-### Tests Recommandés
-1. ✅ Créer un adhérent et vérifier la génération du numéro
-2. ✅ Créer un emprunt et confirmer le changement d'état du livre
-3. ✅ Simuler un retard et vérifier la création de pénalité
-4. ✅ Tester les notifications (modifier les dates pour forcer l'envoi)
-5. ✅ Importer un fichier CSV et vérifier la création des livres
-6. ✅ Tester les paiements de pénalités (complet et partiel)
-7. ✅ Vérifier les statistiques du tableau de bord
+Le tableau de bord constitue le point d'entrée principal du module, offrant une vue d'ensemble en temps réel.
+
+Figure : Tableau de bord principal avec statistiques et accès rapides  
+![Tableau de bord principal](images/dashboard.png)
+
+Le tableau affiche les indicateurs clés de performance (livres disponibles, emprunts actifs, adhérents) ainsi que des boutons d'accès rapide vers les vues filtrées.
+
+Figure : Graphique d'analyse des emprunts par mois  
+![Graphique des emprunts par mois](images/graph_emprunts.png)
+
+Ce graphique permet de suivre l'évolution temporelle de l'activité de prêt.
+
+### 7.2. Gestion du catalogue de livres
+
+La vue Kanban des livres offre une interface visuelle et intuitive pour parcourir le catalogue.
+
+Figure : Vue Kanban des livres avec images et codes couleurs  
+![Vue Kanban des livres](images/livres_kanban.png)
+
+Chaque carte affiche l'image de couverture, le titre, l'auteur, la catégorie et l'état du livre, avec des bordures colorées selon le statut.
+
+Figure : Formulaire détaillé d'un livre  
+![Formulaire de livre](images/livre_form.png)
+
+Le formulaire permet de saisir l'ensemble des métadonnées et d'accéder à l'historique des emprunts via un onglet dédié.
+
+### 7.3. Gestion des adhérents
+
+La fiche adhérent centralise toutes les informations et statistiques liées au membre.
+
+Figure : Fiche complète d'un adhérent avec smart buttons  
+![Fiche adhérent](images/adherent_form.png)
+
+Les smart buttons offrent un accès rapide aux emprunts en cours, aux pénalités et à l'historique des frais d'adhésion.
+
+### 7.4. Gestion des emprunts
+
+La vue des emprunts permet de suivre l'état de chaque prêt et de gérer les retours.
+
+Figure : Liste des emprunts avec code couleur selon l'état  
+![Liste des emprunts](images/emprunts_liste.png)
+
+Les emprunts en retard sont affichés en rouge, facilitant leur identification.
+
+Figure : Formulaire d'emprunt avec workflow  
+![Formulaire d'emprunt](images/emprunt_form.png)
+
+Le formulaire inclut une barre d'état (statusbar) et des boutons d'action contextuels.
+
+### 7.5. Système de réservations
+
+Le module permet aux adhérents de réserver des livres empruntés.
+
+Figure : Vue des réservations avec file d'attente  
+![Vue des réservations](images/reservations_liste.png)
+
+La position dans la file d'attente est indiquée, et le statut évolue automatiquement lors du retour du livre.
+
+### 7.6. Gestion financière
+
+Le module gère les pénalités de retard et les frais d'adhésion de manière structurée.
+
+Figure : Liste des pénalités avec montants et états  
+![Liste des pénalités](images/penalites_liste.png)
+
+Figure : Assistant de paiement d'une pénalité  
+![Assistant de paiement](images/paiement_wizard.png)
+
+L'assistant permet d'enregistrer des paiements partiels ou complets, avec sélection du moyen de paiement.
+
+### 7.7. Notifications automatiques
+
+Le journal des notifications offre une traçabilité complète des envois.
+
+Figure : Journal des notifications avec suivi des succès et échecs  
+![Journal des notifications](images/notifications_log.png)
+
+Figure : Paramètres de configuration des notifications  
+![Paramètres des notifications](images/notifications_settings.png)
+
+Les paramètres permettent de configurer les délais, fréquences et méthodes d'envoi (email, Odoo, ou les deux).
+
+### 7.8. Import de catalogue CSV
+
+Un assistant dédié facilite l'import en masse de livres.
+
+Figure : Assistant d'import CSV avec téléchargement de template  
+![Assistant d'import CSV](images/import_csv_wizard.png)
+
+L'import crée automatiquement les auteurs et catégories manquants et génère un rapport détaillé.
 
 ---
 
-**Le tableau de bord est vide** :
-- Créez quelques livres et emprunts
-- Les statistiques se calculent automatiquement
+## 8. Limites du projet et perspectives d'amélioration
 
-### Contact
-Pour toute question ou assistance :
-- Consultez votre **professeur**
-- Contactez l'**équipe du projet**
+### 8.1. Limites identifiées
 
-## 🙏 Remerciements
+Plusieurs aspects du module pourraient être améliorés ou complétés :
 
-Merci à :
-- La communauté **Odoo** pour la documentation
-- Les **enseignants** pour l'encadrement
-- L'équipe **Docker** pour la conteneurisation
+**Limites fonctionnelles**
+- Absence de gestion multi-exemplaires : un seul exemplaire par titre.
+- Pas de localisation physique des ouvrages (étagère, rayon).
+- Absence de système de notation ou de commentaires par les adhérents.
+- Pas de recherche full-text avancée.
+
+**Limites techniques**
+- Gestion des droits d'accès non différenciée par rôle (bibliothécaire, adhérent, administrateur).
+- Absence d'application mobile native.
+- Export limité aux formats standards Odoo (pas d'export MARC pour interopérabilité bibliothécaire).
+- Pas d'intégration avec des systèmes externes (systèmes de paiement en ligne, catalogues partagés).
+
+**Limites ergonomiques**
+- Interface optimisée pour desktop, moins adaptée aux tablettes et smartphones.
+- Certaines vues nécessitent plusieurs clics pour des actions courantes.
+
+### 8.2. Perspectives d'amélioration
+
+**Évolutions fonctionnelles**
+- Gestion de plusieurs exemplaires par titre avec suivi individuel.
+- Système de recommandations basé sur l'historique d'emprunts.
+- Calendrier d'événements (clubs de lecture, rencontres d'auteurs).
+- Gestion des documents numériques (e-books, PDF).
+
+**Évolutions techniques**
+- Développement d'une API REST pour intégration externe.
+- Application mobile (iOS/Android) pour consultation du catalogue et gestion des emprunts.
+- Intégration de systèmes de paiement en ligne pour les pénalités et adhésions.
+- Export au format MARC pour compatibilité avec d'autres systèmes de gestion bibliothécaire.
+
+**Évolutions analytiques**
+- Rapports avancés : popularité des ouvrages, taux d'occupation, profil des lecteurs.
+- Tableaux de bord personnalisés par rôle.
+- Indicateurs de performance (KPI) pour pilotage stratégique.
 
 ---
 
-**Version** : 17.0.1.0.0  
-**Date** : Décembre 2025  
-**Statut** : ✅ Production Ready  
+## 9. Conclusion
 
-📚 **Bonne gestion de votre bibliothèque !** 🎉
-- **statusbar** : Barre d'état workflow
+Le projet de développement d'un module de gestion de bibliothèque sous **Odoo 17** a permis d'atteindre les objectifs pédagogiques fixés, tout en produisant une solution fonctionnelle et complète.
 
-### Décorateurs Python
-- `@api.depends()` : Champs calculés avec dépendances
-- `@api.onchange()` : Actions au changement de champ
-- `@api.model` : Méthodes de classe
-- `@api.constrains()` : Validations personnalisées (non utilisé ici)
+### 9.1. Bilan du travail réalisé
 
-### Tâche Cron (ir.cron)
-- **Nom** : Vérifier les emprunts en retard
-- **Modèle** : library.borrowing
-- **Méthode** : _cron_check_late_borrowings()
-- **Fréquence** : Quotidienne (1 jour)
-- **Type** : Récurrent (-1 exécutions)
+Le module développé couvre l'ensemble du périmètre fonctionnel d'une bibliothèque moderne :
 
-## 📦 Dépendances
+- Gestion complète du catalogue (livres, auteurs, catégories).
+- Workflow d'emprunt et de retour avec gestion des retards.
+- Gestion des adhérents avec suivi des adhésions.
+- Système de réservations avec file d'attente automatique.
+- Gestion financière (pénalités et frais d'adhésion).
+- Notifications automatiques par email et via l'interface Odoo.
+- Tableau de bord analytique avec graphiques et KPIs.
+- Import CSV pour alimentation rapide du catalogue.
 
-### Modules Odoo Requis
-- **base** : Module de base Odoo (obligatoire)
-- **mail** : Système de messagerie et chatter
+L'architecture du module respecte les standards Odoo, avec une séparation claire entre modèles, vues, wizards, et données. Le code est documenté, structuré, et utilise les mécanismes avancés du framework (champs calculés, workflows, cron jobs, héritage de modèles).
 
-### Technologies
-- **Odoo 17.0** : Framework ERP
-- **Python 3.10+** : Langage de programmation
-- **PostgreSQL 15** : Base de données
-- **Docker** : Conteneurisation
-- **XML** : Déclaration des vues
-- **CSS3** : Styles personnalisés
-- **JavaScript** : (via framework Odoo)
+### 9.2. Compétences acquises
 
-### Configuration Docker
-```yaml
-services:
-  web:
-    image: odoo:17.0
-    ports: 8069:8069
-    volumes:
-      - ./library_management:/mnt/extra-addons/library_management
-  db:
-    image: postgres:15
-```Python
-- `action_confirm_borrowing()` : Confirme l'emprunt, change l'état du livre
-- `action_return_book()` : Retourne le livre, met à jour la date
-- `action_mark_lost()` : Marque livre et emprunt comme perdus
-- `action_set_available/maintenance/lost()` : Change l'état du livre
-- `_cron_check_late_borrowings()` : Détecte les retards quotidiennement
+Ce projet a permis de développer un ensemble de compétences techniques et méthodologiques :
 
-### Vues et Interfaces
-- **Formulaire** : Saisie détaillée avec onglets (notebook)
-- **Liste (Tree)** : Vue tabulaire avec décorations conditionnelles
-- **Kanban** : Cartes visuelles avec images et bordures colorées
-- **Recherche** : Filtres avancés, regroupements (group_by), domaines
-- **Statusbar** : Barre d'état pour workflow visuel
+**Compétences ERP et Odoo**
+- Maîtrise de l'architecture modulaire d'Odoo.
+- Développement de modèles de données avec l'ORM Odoo.
+- Conception de vues XML (formulaires, listes, Kanban, graphiques, pivot).
+- Implémentation de workflows métier avec gestion d'états.
+- Gestion des droits d'accès et sécurité.
+- Utilisation des mécanismes avancés (champs calculés, contraintes, wizards, cron jobs).
 
-### Droits d'Accès (ir.model.access.csv)
-- Lecture, écriture, création, suppression pour tous les modèles
-- Groupe : base.group_user (utilisateurs internes)
-- Dashboard en lecture seule
+**Compétences en modélisation et conception**
+- Analyse des processus métier et traduction en spécifications fonctionnelles.
+- Modélisation relationnelle avec contraintes d'intégrité.
+- Conception de workflows et gestion des états.
+- Définition d'indicateurs de performance et reporting.
 
-### CSS et Assets
-- **Fichier CSS personnalisé** : library_style.css
-- **Badges colorés** avec classes Bootstrap
-- **Effets hover** et transitions
-- **Gradients** et ombres moderne
-   - Connectez-vous à Odoo (http://localhost:8069)
-   - Allez dans Paramètres → Général
-   - Activez le mode développeur
+**Compétences techniques**
+- Programmation Python orientée objet.
+- Développement avec le framework Odoo (API, décorateurs, héritage).
+- Intégration de données (import CSV).
+- Gestion de base de données PostgreSQL.
+- Déploiement avec Docker et Docker Compose.
+- Versionnement de code et documentation.
 
-4. **Installez le module** :
-   - Allez dans Apps
-   - Cliquez sur "Mettre à jour la liste des applications"
-   - Recherchez "Gestion de Bibliothèque"
-   - Cliquez sur "Installer"
+**Compétences transversales**
+- Gestion de projet informatique.
+- Documentation technique et rédaction de rapports.
+- Démarche qualité et tests fonctionnels.
 
-## Utilisation
+### 9.3. Ouverture
 
-### Menu Principal : Bibliothèque
+Ce projet constitue une base solide pour des développements futurs. Les perspectives d'évolution identifiées (gestion multi-exemplaires, application mobile, intégration externe) pourraient faire l'objet de projets ultérieurs, illustrant ainsi la démarche d'amélioration continue caractéristique des systèmes ERP en environnement professionnel.
 
-#### 📚 Livres
-- **Tous les livres** : Vue complète de tous les livres
-- **Livres disponibles** : Livres prêts à être empruntés
-- **Livres empruntés** : Livres actuellement en prêt
+L'expérience acquise sur Odoo est directement transposable en entreprise, Odoo étant largement utilisé dans divers secteurs (commerce, industrie, services). La compréhension des mécanismes de modélisation, de workflow et d'intégration est applicable à d'autres ERP (SAP, Microsoft Dynamics, etc.) ou plus largement à tout système d'information d'entreprise.
 
-#### 📖 Emprunts
-- **Tous les emprunts** : Historique complet
-- **Emprunts en cours** : Emprunts actifs
-- **Emprunts en retard** : Suivi des retards
+En définitive, ce projet a permis de passer de la théorie à la pratique, en produisant une solution concrète, fonctionnelle et professionnelle, démontrant ainsi la maîtrise des concepts enseignés dans le module Gestion des Processus Métier et ERP.
 
-#### ⚙️ Configuration
-- **Auteurs** : Gestion des auteurs
-- **Catégories** : Organisation des catégories
+---
 
-## Données de Démonstration
-
-Le module inclut des données de démonstration :
-
-### Catégories
-- Fiction (avec sous-catégories : Science-Fiction, Fantasy)
-- Non-Fiction (avec sous-catégories : Sciences, Histoire, Technologie)
-
-### Auteurs
-- Victor Hugo
-- Jules Verne
-- Albert Camus
-
-### Livres
-- Les Misérables (Victor Hugo)
-- Vingt mille lieues sous les mers (Jules Verne)
-- L'Étranger (Albert Camus)
-
-## Fonctionnalités Techniques
-
-### Champs Calculés
-- Nombre de livres par auteur
-- Nombre de livres par catégorie
-- Jours d'emprunt
-- Jours de retard
-- Emprunt en cours
-
-### Actions Automatiques
-- Séquence automatique pour les emprunts (EMP00001, EMP00002, etc.)
-- Date de retour prévue calculée automatiquement (14 jours)
-- Détection automatique des emprunts en retard (tâche cron quotidienne)
-- Mise à jour automatique de l'état des livres
-
-### Boutons d'Action
-- Marquer un livre disponible / en maintenance / perdu
-- Confirmer un emprunt
-- Retourner un livre
-- Marquer un livre comme perdu
-- Annuler un emprunt
-
-### Vues Disponibles
-- **Formulaire** : Saisie détaillée
-- **Liste** : Vue tabulaire
-- **Kanban** : Vue carte (livres et emprunts)
-- **Recherche** : Filtres et regroupements avancés
-
-## Intégration Odoo
-
-Le module utilise les fonctionnalités standard d'Odoo :
-- **mail.thread** : Suivi des modifications (chatter)
-- **mail.activity.mixin** : Planification d'activités
-- **Contraintes SQL** : ISBN unique, catégories uniques
-- **Relations** : Many2one, One2many
-- **États** : Selection avec statusbar
-- **Widgets** : Badge, Image, Email, Phone
-
-## Prérequis
-
-- Odoo 17.0
-- Python 3.10+
-- PostgreSQL 15
-- Module base
-- Module mail
-
-## Auteur
-
-Développé dans le cadre d'un projet universitaire pour la démonstration du paramétrage et de la configuration d'Odoo 17.
-
-## Licence
-
-LGPL-3
-
-## Support
-
-Pour toute question ou assistance, veuillez contacter votre professeur ou l'équipe du projet.
+**Fin du rapport**
