@@ -578,7 +578,3 @@ Ce projet constitue une base solide pour des développements futurs. Les perspec
 L'expérience acquise sur Odoo est directement transposable en entreprise, Odoo étant largement utilisé dans divers secteurs (commerce, industrie, services). La compréhension des mécanismes de modélisation, de workflow et d'intégration est applicable à d'autres ERP (SAP, Microsoft Dynamics, etc.) ou plus largement à tout système d'information d'entreprise.
 
 En définitive, ce projet a permis de passer de la théorie à la pratique, en produisant une solution concrète, fonctionnelle et professionnelle, démontrant ainsi la maîtrise des concepts enseignés dans le module Gestion des Processus Métier et ERP.
-
----
-
-**Fin du rapport**
