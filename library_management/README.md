@@ -4,25 +4,30 @@
 
 ## 1. Introduction
 
-Le présent rapport s’inscrit dans le cadre du module __Gestion des Processus Métier et ERP__ et vise à présenter le travail de conception et de développement d’un module métier sous la plateforme **Odoo 17**. Ce projet a pour objectif de consolider la compréhension pratique des systèmes ERP et de mettre en évidence leur rôle central dans la digitalisation et l’optimisation des processus organisationnels.
+Le présent rapport s’inscrit dans le cadre du module _Gestion des Processus Métier et ERP_ et vise à présenter le travail de conception et de développement d’un module métier sous la plateforme **Odoo 17**. Ce projet a pour objectif de consolider la compréhension pratique des systèmes ERP et de mettre en évidence leur rôle central dans la digitalisation et l’optimisation des processus organisationnels.
 
-Le domaine métier retenu concerne la gestion des livres. Initialement orienté vers une approche commerciale classique (achat, vente et gestion de stock), le périmètre du projet a évolué afin de mieux correspondre à un contexte d’usage réel, en l’occurrence la gestion d’une bibliothèque. Ce choix permet de modéliser et d’implémenter des processus métiers variés et complémentaires, tels que la gestion des ouvrages, des adhérents, des emprunts et retours, ainsi que certains aspects financiers et de notification.
+Le domaine métier retenu concerne la gestion des livres. Initialement orienté vers une approche commerciale classique (achat, vente et gestion de stock), le périmètre du projet a évolué afin de mieux correspondre à un contexte d’usage réel, en l’occurrence la **gestion d’une bibliothèque.** Ce choix permet de modéliser et d’implémenter des processus métiers variés et complémentaires, tels que la gestion des ouvrages, des adhérents, des emprunts et retours, ainsi que certains aspects financiers et de notification.
 
-Le module développé, intitulé « Gestion de Bibliothèque », constitue une solution fonctionnelle et opérationnelle intégrée à Odoo. Il illustre de manière concrète l’application des concepts théoriques abordés au cours, tout en mettant en pratique les mécanismes fondamentaux de développement de modules ERP.
+Le module développé, intitulé « **Gestion de Bibliothèque** », constitue une solution fonctionnelle et opérationnelle intégrée à Odoo. Il illustre de manière concrète l’application des concepts théoriques abordés au cours, tout en mettant en pratique les mécanismes fondamentaux de développement de modules ERP.
 
 ---
 
 ## 2. Contexte pédagogique et objectifs du module
 
-Ce projet s'inscrit dans le cadre d'un enseignement de cycle ingénieur visant à former les étudiants aux systèmes d'information d'entreprise et aux ERP. Les objectifs pédagogiques poursuivis sont les suivants :
+Ce projet s’inscrit dans le cadre de la formation du cycle ingénieur, dont l’objectif est de préparer les étudiants à la conception et à l’exploitation des systèmes d’information d’entreprise, en particulier les progiciels de gestion intégrés (ERP). Il vise à développer une compréhension approfondie des enjeux techniques et organisationnels liés à ces systèmes.
 
-- Comprendre l'architecture modulaire d'un ERP et les principes de conception d'applications métier.
-- Maîtriser le framework Odoo : modèles de données (ORM), vues XML, workflows, et droits d'accès.
-- Modéliser des processus métier et les implémenter sous forme de modules fonctionnels.
-- Développer des compétences en programmation Python orientée objet appliquée aux ERP.
-- Appréhender les aspects d'intégration de données, de reporting et de notifications automatiques.
+Les principaux objectifs pédagogiques du projet sont les suivants :
 
-Le projet permet ainsi de mettre en œuvre de manière concrète les connaissances théoriques relatives à la gestion des processus, à la modélisation relationnelle, et à l'utilisation d'outils professionnels tels qu'Odoo et Docker.
+- Comprendre l’architecture modulaire d’un ERP ainsi que les principes de conception d’applications métier.
+
+- Maîtriser le framework **Odoo**, notamment la gestion des modèles de données via l’ORM, la définition des vues XML, les workflows et les mécanismes de gestion des droits d’accès.
+
+- Modéliser des processus métier et les implémenter sous forme de modules fonctionnels intégrés.
+- Développer des compétences en programmation **Python orientée objet** appliquée aux environnements ERP.
+
+- Assimiler les aspects liés à l’intégration des données, au reporting et aux notifications automatiques.
+
+Ce projet permet ainsi de mettre en œuvre de manière concrète les connaissances théoriques acquises en gestion des processus métier, en modélisation relationnelle et en ingénierie logicielle, tout en familiarisant les étudiants avec des outils professionnels tels qu’Odoo et Docker.
 
 ---
 
