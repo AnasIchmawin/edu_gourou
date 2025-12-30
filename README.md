@@ -153,7 +153,7 @@ Ce workflow montre la logique et la cohérence du module.
 #### 4.4.1. Prérequis techniques
 
 Pour installer le module, il faut :
-- Docker et Docker Compose installés
+- Docker et Docker Compose installés ou bien installé odoo V17 localement 
 - Les ports 8069 (Odoo) et 5432 (PostgreSQL) libres
 - Un système compatible (Windows, Linux, macOS)
 
@@ -187,6 +187,8 @@ docker-compose up -d
 Cette commande lance deux conteneurs :
 - Odoo (version 17.0) sur le port 8069
 - PostgreSQL (version 15) pour la base de données
+
+Ensuite il faut mettre le chemin du dossier du projet dans odoo.config; pour qu'odoo detecte l'emplacement de notre module .
 
 **3. Vérifier que tout démarre bien**
 
